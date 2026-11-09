@@ -462,14 +462,25 @@
 
         // Firebase Configuration (Injected by platform or use defaults if not present)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'wedding-app-default';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            // Mock config, usually injected by environment
-        };
+        
+        let firebaseConfig = null;
+        try {
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                firebaseConfig = JSON.parse(__firebase_config);
+            }
+        } catch (e) {
+            console.warn("No database config found. Running in static mode.");
+        }
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const storage = getStorage(app);
+        let app, db, auth, storage;
+        const hasFirebase = firebaseConfig && Object.keys(firebaseConfig).length > 0;
+
+        if (hasFirebase) {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            storage = getStorage(app);
+        }
 
         // App State
         let siteData = {
@@ -493,6 +504,12 @@
 
             // Setup Countdown
             setInterval(updateCountdown, 1000);
+
+            if (!hasFirebase) {
+                console.log("Running on GitHub Pages. Database features disabled.");
+                updateWebsiteUI();
+                return;
+            }
 
             // Setup Auth Listener
             onAuthStateChanged(auth, (user) => {
@@ -676,6 +693,12 @@
         // Standard Email/Password Login
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (!hasFirebase) {
+                showToast("Admin login requires a connected database. It is currently disabled on GitHub Pages.");
+                return;
+            }
+
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
             const errorDiv = document.getElementById('login-error');
@@ -698,6 +721,11 @@
 
         // Test/Guest Login (Uses Anonymous Auth or Custom Token)
         window.handleGuestLogin = async () => {
+             if (!hasFirebase) {
+                 showToast("Admin login requires a connected database. It is currently disabled on GitHub Pages.");
+                 return;
+             }
+
              const btn = document.getElementById('login-btn');
              btn.innerHTML = '<span class="loader"></span>';
              try {
