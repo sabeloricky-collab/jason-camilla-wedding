@@ -460,26 +460,25 @@
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-        // Firebase Configuration (Injected by platform or use defaults if not present)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'wedding-app-default';
+// Firebase Configuration (Connected to your actual database!)
+        const appId = 'jason-camilla-wedding';
         
-        let firebaseConfig = null;
-        try {
-            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                firebaseConfig = JSON.parse(__firebase_config);
-            }
-        } catch (e) {
-            console.warn("No database config found. Running in static mode.");
-        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyAqARMnJFqfFiC5txuA-dsF55rC8uf5wH8",
+            authDomain: "jason-camilla-wedding.firebaseapp.com",
+            projectId: "jason-camilla-wedding",
+            storageBucket: "jason-camilla-wedding.firebasestorage.app",
+            messagingSenderId: "761257760032",
+            appId: "1:761257760032:web:0933464b22a62a03dff345"
+        };
 
         let app, db, auth, storage;
-        const hasFirebase = firebaseConfig && Object.keys(firebaseConfig).length > 0;
+        const hasFirebase = true;
 
-        if (hasFirebase) {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-            storage = getStorage(app);
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+        storage = getStorage(app);
         }
 
         // App State
