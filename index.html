@@ -11,19 +11,29 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     
-    <!-- Tailwind Config for Custom Colors & Fonts -->
+    <!-- Dynamic Theme Variables & Tailwind Config -->
+    <style id="theme-variables">
+        :root {
+            --color-bg: #f5efe6;        /* Warm Beige Backdrop */
+            --color-primary: #b56576;   /* Old Rose Font & Accents */
+            --color-accent: #e5989b;    /* Soft Pink Highlights */
+            --color-card: #fcf9f5;      /* Lighter Cream Card Surface */
+        }
+    </style>
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        oldrose: '#c08081',
-                        dustypink: '#dca7a5',
-                        beige: '#fcfbf8',
-                        textdark: '#4a4a4a',
-                        textlight: '#8c8c8c'
+                        oldrose: 'var(--color-primary)',
+                        dustypink: 'var(--color-accent)',
+                        beige: 'var(--color-bg)',
+                        creamcard: 'var(--color-card)',
+                        textdark: '#6d4c52',
+                        textlight: '#8e6c72'
                     },
                     fontFamily: {
                         names: ['"Great Vibes"', 'cursive'],
@@ -37,14 +47,15 @@
 
     <style>
         body {
-            background-color: theme('colors.beige');
-            color: theme('colors.textdark');
+            background-color: var(--color-bg);
+            color: var(--color-primary);
             scroll-behavior: smooth;
         }
 
-        /* Floral Background Accents */
+        /* Subtle Floral Background Accents */
         .bg-floral-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83v58.34h-58.34l-.83-.83V0h58.34zM29.5 48.5c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm16-16c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7z' fill='%23dca7a5' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-color: var(--color-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83v58.34h-58.34l-.83-.83V0h58.34zM29.5 48.5c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm16-16c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7z' fill='%23b56576' fill-opacity='0.07' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
         /* Smooth reveal animations */
@@ -62,22 +73,23 @@
         .input-field {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1px solid theme('colors.dustypink');
+            border: 1px solid var(--color-accent);
             border-radius: 0.5rem;
-            background-color: white;
-            font-family: theme('fontFamily.body');
+            background-color: #ffffff;
+            color: #4a3538;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s;
         }
         .input-field:focus {
             outline: none;
-            border-color: theme('colors.oldrose');
-            box-shadow: 0 0 0 3px rgba(192, 128, 129, 0.2);
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(181, 101, 118, 0.2);
         }
 
         /* Loader */
         .loader {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid theme('colors.oldrose');
+            border-top: 3px solid var(--color-primary);
             border-radius: 50%;
             width: 20px;
             height: 20px;
@@ -87,23 +99,46 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Hide scrollbar for clean look */
+        /* Equalizer Animation for Playing Music */
+        @keyframes eqBar {
+            0%, 100% { height: 4px; }
+            50% { height: 14px; }
+        }
+        .eq-playing span:nth-child(1) { animation: eqBar 0.8s infinite ease-in-out; }
+        .eq-playing span:nth-child(2) { animation: eqBar 0.6s infinite ease-in-out 0.2s; }
+        .eq-playing span:nth-child(3) { animation: eqBar 0.9s infinite ease-in-out 0.4s; }
+
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: theme('colors.beige'); }
-        ::-webkit-scrollbar-thumb { background: theme('colors.dustypink'); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: theme('colors.oldrose'); }
+        ::-webkit-scrollbar-track { background: var(--color-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--color-accent); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
     </style>
 </head>
 <body class="font-body antialiased relative">
 
     <!-- Global configuration for Apps Script RSVP -->
     <script>
-        // Replace this with your deployed Google Apps Script Web App URL
         window.APPS_SCRIPT_URL = ""; 
     </script>
 
+    <!-- Hidden Background Audio Element -->
+    <audio id="bg-audio" loop preload="metadata"></audio>
+
+    <!-- Floating Music Player Button (Bottom Left) -->
+    <div id="music-player-widget" class="fixed bottom-4 left-4 z-40">
+        <button onclick="toggleBgMusic()" id="music-toggle-btn" class="bg-creamcard/95 backdrop-blur-md border border-dustypink/50 text-oldrose hover:bg-oldrose hover:text-white px-4 py-2.5 rounded-full shadow-lg transition-all flex items-center gap-2.5 text-xs font-medium">
+            <div id="music-eq" class="flex items-end gap-0.5 h-3.5 w-3 justify-center">
+                <span class="w-0.5 h-2 bg-current rounded-full"></span>
+                <span class="w-0.5 h-3 bg-current rounded-full"></span>
+                <span class="w-0.5 h-1.5 bg-current rounded-full"></span>
+            </div>
+            <span id="music-btn-label">Play Music</span>
+        </button>
+    </div>
+
     <!-- UI Overlay for Messages (Toast) -->
-    <div id="toast" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-oldrose text-white px-6 py-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="toast" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-[110] bg-oldrose text-white px-6 py-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300">
         <span id="toast-message"></span>
     </div>
 
@@ -111,49 +146,80 @@
     <div id="main-website">
         
         <!-- Navigation -->
-        <nav class="fixed w-full z-40 top-0 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm py-4" id="navbar">
+        <nav class="fixed w-full z-40 top-0 transition-all duration-300 bg-creamcard/95 backdrop-blur-md shadow-sm py-4 border-b border-dustypink/20" id="navbar">
             <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
                 <a href="#" class="font-names text-3xl text-oldrose">J & C</a>
-                <div class="hidden md:flex space-x-8 font-headings text-sm uppercase tracking-widest text-textdark">
-                    <a href="#our-wedding" class="hover:text-oldrose transition-colors">The Wedding</a>
-                    <a href="#invitation" class="hover:text-oldrose transition-colors">Invitation</a>
-                    <a href="#rsvp" class="hover:text-oldrose transition-colors">RSVP</a>
+                <div class="hidden md:flex space-x-8 font-headings text-sm uppercase tracking-widest text-oldrose font-semibold">
+                    <a href="#our-story" class="hover:text-dustypink transition-colors">Our Story</a>
+                    <a href="#our-wedding" class="hover:text-dustypink transition-colors">The Wedding</a>
+                    <a href="#prenup" class="hover:text-dustypink transition-colors">Prenup</a>
+                    <a href="#invitation" class="hover:text-dustypink transition-colors">Invitation</a>
+                    <a href="#rsvp" class="hover:text-dustypink transition-colors">RSVP</a>
                 </div>
                 <!-- Mobile Menu Button -->
-                <button class="md:hidden text-textdark" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <button class="md:hidden text-oldrose" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
             </div>
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden bg-white border-t mt-4 pb-4 px-4 flex flex-col space-y-4 font-headings text-center text-sm uppercase tracking-widest">
-                <a href="#our-wedding" class="block pt-4 hover:text-oldrose" onclick="document.getElementById('mobile-menu').classList.add('hidden')">The Wedding</a>
-                <a href="#invitation" class="block hover:text-oldrose" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Invitation</a>
-                <a href="#rsvp" class="block hover:text-oldrose" onclick="document.getElementById('mobile-menu').classList.add('hidden')">RSVP</a>
+            <div id="mobile-menu" class="hidden md:hidden bg-creamcard border-t border-dustypink/20 mt-4 pb-4 px-4 flex flex-col space-y-4 font-headings text-center text-sm uppercase tracking-widest text-oldrose">
+                <a href="#our-story" class="block pt-4 hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Our Story</a>
+                <a href="#our-wedding" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">The Wedding</a>
+                <a href="#prenup" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Prenup</a>
+                <a href="#invitation" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Invitation</a>
+                <a href="#rsvp" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">RSVP</a>
             </div>
         </nav>
 
         <!-- Hero Section -->
         <section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden">
-            <!-- Background Image -->
             <div class="absolute inset-0 z-0">
                 <img id="hero-img-display" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80" alt="Wedding Couple" class="w-full h-full object-cover object-center filter brightness-75">
-                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-[#f5efe6]/40"></div>
             </div>
             
             <div class="relative z-10 text-center text-white px-4 mt-16 reveal">
-                <p class="font-headings text-lg md:text-xl tracking-widest uppercase mb-4 shadow-sm">We are getting married</p>
-                <h1 class="font-names text-6xl md:text-8xl lg:text-9xl mb-6 drop-shadow-lg">Jason & Camilla</h1>
-                <p id="display-date" class="font-headings text-2xl md:text-3xl tracking-wider drop-shadow-md">December 18, 2026</p>
+                <p class="font-headings text-lg md:text-xl tracking-widest uppercase mb-4 drop-shadow">We are getting married</p>
+                <h1 class="font-names text-6xl md:text-8xl lg:text-9xl mb-6 text-pink-100 drop-shadow-lg">Jason & Camilla</h1>
+                <p id="display-date" class="font-headings text-2xl md:text-3xl tracking-wider text-pink-50 drop-shadow-md">December 18, 2026</p>
                 
                 <!-- Countdown -->
                 <div class="flex justify-center gap-4 md:gap-8 mt-12 mb-12 font-headings">
-                    <div class="flex flex-col items-center"><span id="cd-days" class="text-4xl md:text-5xl">00</span><span class="text-xs uppercase tracking-widest mt-2">Days</span></div>
-                    <div class="flex flex-col items-center"><span id="cd-hours" class="text-4xl md:text-5xl">00</span><span class="text-xs uppercase tracking-widest mt-2">Hours</span></div>
-                    <div class="flex flex-col items-center"><span id="cd-mins" class="text-4xl md:text-5xl">00</span><span class="text-xs uppercase tracking-widest mt-2">Mins</span></div>
-                    <div class="flex flex-col items-center"><span id="cd-secs" class="text-4xl md:text-5xl">00</span><span class="text-xs uppercase tracking-widest mt-2">Secs</span></div>
+                    <div class="flex flex-col items-center bg-white/15 backdrop-blur-sm px-4 py-3 rounded-xl border border-pink-200/30"><span id="cd-days" class="text-3xl md:text-5xl text-pink-100">00</span><span class="text-xs uppercase tracking-widest mt-1">Days</span></div>
+                    <div class="flex flex-col items-center bg-white/15 backdrop-blur-sm px-4 py-3 rounded-xl border border-pink-200/30"><span id="cd-hours" class="text-3xl md:text-5xl text-pink-100">00</span><span class="text-xs uppercase tracking-widest mt-1">Hours</span></div>
+                    <div class="flex flex-col items-center bg-white/15 backdrop-blur-sm px-4 py-3 rounded-xl border border-pink-200/30"><span id="cd-mins" class="text-3xl md:text-5xl text-pink-100">00</span><span class="text-xs uppercase tracking-widest mt-1">Mins</span></div>
+                    <div class="flex flex-col items-center bg-white/15 backdrop-blur-sm px-4 py-3 rounded-xl border border-pink-200/30"><span id="cd-secs" class="text-3xl md:text-5xl text-pink-100">00</span><span class="text-xs uppercase tracking-widest mt-1">Secs</span></div>
                 </div>
 
-                <a href="#rsvp" class="inline-block bg-oldrose hover:bg-opacity-90 text-white font-headings uppercase tracking-widest text-sm px-8 py-4 rounded-full transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">RSVP Now</a>
+                <a href="#rsvp" class="inline-block bg-oldrose hover:bg-dustypink text-white font-headings uppercase tracking-widest text-sm px-8 py-4 rounded-full transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">RSVP Now</a>
+            </div>
+        </section>
+
+        <!-- ROW 1: Our Story (How the Couple Met) -->
+        <section id="our-story" class="py-24 bg-beige border-b border-dustypink/20">
+            <div class="max-w-5xl mx-auto px-4 reveal">
+                <div class="text-center mb-14">
+                    <p class="font-body text-xs uppercase tracking-[0.25em] text-dustypink font-semibold mb-2">From Hello to Forever</p>
+                    <h2 id="display-story-title" class="font-names text-5xl md:text-6xl text-oldrose">Our Love Story</h2>
+                </div>
+
+                <div class="bg-creamcard rounded-3xl p-8 md:p-12 shadow-md border border-dustypink/30 grid md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-5">
+                        <div class="rounded-2xl overflow-hidden shadow-lg border-4 border-white aspect-[4/5]">
+                            <img id="story-img-display" src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80" alt="How We Met" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <div class="md:col-span-7 text-left space-y-5">
+                        <span class="inline-block px-4 py-1 rounded-full bg-dustypink/20 text-oldrose font-headings text-sm italic">How We Met</span>
+                        <h3 id="display-story-subtitle" class="font-headings text-2xl md:text-3xl text-oldrose font-semibold">It started with a simple moment...</h3>
+                        <p id="display-story-text" class="font-body text-textdark leading-relaxed whitespace-pre-line">
+                            We first crossed paths when we least expected it, turning an ordinary day into the start of our favorite chapter. From endless conversations over coffee to spontaneous weekend trips up to Baguio, every moment brought us closer together.
+
+                            Now, surrounded by the people we love most, we are ready to say "I do" and begin our forever.
+                        </p>
+                        <p class="font-names text-3xl text-dustypink pt-2">— Jason & Camilla</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -165,42 +231,80 @@
                     <p class="font-body text-textlight max-w-xl mx-auto">Please join us in celebrating our special day at these beautiful locations.</p>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-12 lg:gap-24">
+                <div class="grid md:grid-cols-2 gap-12 lg:gap-16">
                     <!-- Ceremony -->
-                    <div class="text-center reveal bg-white p-8 rounded-2xl shadow-sm border border-dustypink/30">
-                        <div class="w-full h-64 mb-6 rounded-xl overflow-hidden shadow-inner relative">
+                    <div class="text-center reveal bg-creamcard p-8 rounded-3xl shadow-md border border-dustypink/30">
+                        <div class="w-full h-64 mb-6 rounded-2xl overflow-hidden shadow-inner relative">
                             <img id="ceremony-img-display" src="https://images.unsplash.com/photo-1548625361-b51fbce91fb5?auto=format&fit=crop&w=800&q=80" alt="Ceremony Venue" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
                         </div>
-                        <h3 class="font-headings text-2xl mb-2 text-textdark">The Ceremony</h3>
-                        <p class="font-body font-semibold text-oldrose mb-4">2:00 PM</p>
-                        <p class="font-body text-textlight mb-1">St. Vincent Ferrer Parish</p>
-                        <p class="font-body text-textlight">Baguio City</p>
+                        <h3 class="font-headings text-2xl mb-2 text-oldrose font-semibold">The Ceremony</h3>
+                        <p id="display-ceremony-time" class="font-body font-semibold text-dustypink text-lg mb-3">10:00 AM</p>
+                        <p id="display-ceremony-venue" class="font-headings text-lg text-oldrose font-medium mb-1">Saint Vincent</p>
+                        <p id="display-ceremony-address" class="font-body text-textlight">Baguio City</p>
                     </div>
 
                     <!-- Reception -->
-                    <div class="text-center reveal bg-white p-8 rounded-2xl shadow-sm border border-dustypink/30">
-                        <div class="w-full h-64 mb-6 rounded-xl overflow-hidden shadow-inner relative">
+                    <div class="text-center reveal bg-creamcard p-8 rounded-3xl shadow-md border border-dustypink/30">
+                        <div class="w-full h-64 mb-6 rounded-2xl overflow-hidden shadow-inner relative">
                             <img id="reception-img-display" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Reception Venue" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
                         </div>
-                        <h3 class="font-headings text-2xl mb-2 text-textdark">The Reception</h3>
-                        <p class="font-body font-semibold text-oldrose mb-4">5:00 PM</p>
-                        <p class="font-body text-textlight mb-1">Gestdan Centrum</p>
-                        <p class="font-body text-textlight">Baguio City</p>
+                        <h3 class="font-headings text-2xl mb-2 text-oldrose font-semibold">The Reception</h3>
+                        <p id="display-reception-time" class="font-body font-semibold text-dustypink text-lg mb-3">12:00 NN - 4:00 PM</p>
+                        <p id="display-reception-venue" class="font-headings text-lg text-oldrose font-medium mb-1">GESTDAN CENTRUM BOKAWKAN</p>
+                        <p id="display-reception-address" class="font-body text-textlight">Baguio City</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROW 2: Save the Date & Prenup Gallery / Video -->
+        <section id="prenup" class="py-24 bg-beige border-t border-b border-dustypink/20">
+            <div class="max-w-6xl mx-auto px-4 reveal">
+                <div class="text-center mb-14">
+                    <p class="font-body text-xs uppercase tracking-[0.25em] text-dustypink font-semibold mb-2">Captured Moments</p>
+                    <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-3">Save the Date & Prenup</h2>
+                    <p id="display-prenup-caption" class="font-body text-textlight max-w-xl mx-auto">A glimpse of our journey leading up to December 18, 2026.</p>
+                </div>
+
+                <!-- Optional Prenup Video Container -->
+                <div id="prenup-video-wrapper" class="hidden max-w-4xl mx-auto mb-12">
+                    <div class="bg-creamcard p-3 rounded-3xl shadow-lg border border-dustypink/30">
+                        <div class="relative w-full overflow-hidden rounded-2xl aspect-video bg-black">
+                            <iframe id="prenup-video-frame" class="w-full h-full" src="" title="Prenup Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save the Date Photo Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-creamcard p-3 rounded-2xl shadow-md border border-dustypink/30 group overflow-hidden">
+                        <div class="overflow-hidden rounded-xl aspect-[3/4]">
+                            <img id="prenup-img-1" src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80" alt="Save the Date 1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                    </div>
+                    <div class="bg-creamcard p-3 rounded-2xl shadow-md border border-dustypink/30 group overflow-hidden">
+                        <div class="overflow-hidden rounded-xl aspect-[3/4]">
+                            <img id="prenup-img-2" src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80" alt="Save the Date 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                    </div>
+                    <div class="bg-creamcard p-3 rounded-2xl shadow-md border border-dustypink/30 group overflow-hidden">
+                        <div class="overflow-hidden rounded-xl aspect-[3/4]">
+                            <img id="prenup-img-3" src="https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=800&q=80" alt="Save the Date 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Digital Invitation Card -->
-        <section id="invitation" class="py-24 bg-white relative overflow-hidden">
+        <section id="invitation" class="py-24 bg-floral-pattern relative overflow-hidden">
             <div class="max-w-4xl mx-auto px-4 relative z-10 text-center reveal">
-                <div class="bg-beige p-8 md:p-16 rounded-3xl shadow-xl border-4 border-white outline outline-1 outline-dustypink/40 relative">
-                    <!-- Corner Floral Accents (CSS) -->
+                <div class="bg-creamcard p-8 md:p-16 rounded-3xl shadow-xl border-4 border-white outline outline-1 outline-dustypink/40 relative">
                     <div class="absolute top-0 left-0 w-24 h-24 bg-dustypink/20 rounded-br-full -z-10"></div>
                     <div class="absolute bottom-0 right-0 w-24 h-24 bg-dustypink/20 rounded-tl-full -z-10"></div>
 
                     <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-8">You're Invited</h2>
-                    <p id="display-invitation" class="font-headings text-lg md:text-xl leading-relaxed text-textdark max-w-2xl mx-auto italic mb-8">
+                    <p id="display-invitation" class="font-headings text-lg md:text-xl leading-relaxed text-oldrose max-w-2xl mx-auto italic mb-8">
                         Together with their families, we invite you to share in the joy of the beginning of our new life together.
                     </p>
                     <p class="font-names text-4xl text-dustypink mt-8">Jason & Camilla</p>
@@ -209,20 +313,20 @@
         </section>
 
         <!-- Bible Verse -->
-        <section class="py-20 bg-floral-pattern text-center reveal border-t border-b border-dustypink/20">
+        <section class="py-20 bg-beige text-center reveal border-t border-b border-dustypink/20">
             <div class="max-w-3xl mx-auto px-6">
-                <svg class="w-10 h-10 mx-auto text-oldrose mb-6 opacity-60" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                <p id="display-verse" class="font-headings text-xl md:text-2xl leading-relaxed text-textdark mb-6 italic">
+                <svg class="w-10 h-10 mx-auto text-dustypink mb-6 opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                <p id="display-verse" class="font-headings text-xl md:text-2xl leading-relaxed text-oldrose mb-6 italic">
                     "Love is patient, love is kind. It does not envy, it does not boast, it is not proud."
                 </p>
-                <p id="display-reference" class="font-body text-sm uppercase tracking-widest text-oldrose font-semibold">
+                <p id="display-reference" class="font-body text-sm uppercase tracking-widest text-dustypink font-semibold">
                     1 Corinthians 13:4
                 </p>
             </div>
         </section>
 
         <!-- RSVP Form Section -->
-        <section id="rsvp" class="py-24 bg-white">
+        <section id="rsvp" class="py-24 bg-floral-pattern">
             <div class="max-w-3xl mx-auto px-4 reveal">
                 <div class="text-center mb-12">
                     <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-4">RSVP</h2>
@@ -230,16 +334,16 @@
                 </div>
 
                 <!-- Form Container -->
-                <div id="rsvp-form-container" class="bg-beige p-8 md:p-12 rounded-3xl shadow-lg border border-dustypink/20">
+                <div id="rsvp-form-container" class="bg-creamcard p-8 md:p-12 rounded-3xl shadow-lg border border-dustypink/30">
                     <form id="rsvp-form" class="space-y-6">
                         <div>
-                            <label class="block font-headings text-textdark mb-2">Guest's Full Name *</label>
-                            <input type="text" id="rsvp-name" required class="input-field" placeholder="John Doe">
+                            <label class="block font-headings text-oldrose font-semibold mb-2">Guest's Full Name *</label>
+                            <input type="text" id="rsvp-name" required class="input-field" placeholder="Juan Dela Cruz">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block font-headings text-textdark mb-2">Number of Guests *</label>
+                                <label class="block font-headings text-oldrose font-semibold mb-2">Number of Guests *</label>
                                 <select id="rsvp-count" required class="input-field">
                                     <option value="" disabled selected>Select number</option>
                                     <option value="1">1</option>
@@ -250,7 +354,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block font-headings text-textdark mb-2">Attendance *</label>
+                                <label class="block font-headings text-oldrose font-semibold mb-2">Attendance *</label>
                                 <select id="rsvp-attendance" required class="input-field">
                                     <option value="" disabled selected>Will you attend?</option>
                                     <option value="Joyfully Accepts">Joyfully Accepts</option>
@@ -260,28 +364,28 @@
                         </div>
 
                         <div>
-                            <label class="block font-headings text-textdark mb-2">Additional Guest Names (if applicable)</label>
-                            <input type="text" id="rsvp-additional" class="input-field" placeholder="Jane Doe, Baby Doe">
+                            <label class="block font-headings text-oldrose font-semibold mb-2">Additional Guest Names (if applicable)</label>
+                            <input type="text" id="rsvp-additional" class="input-field" placeholder="Maria Dela Cruz">
                         </div>
 
                         <div>
-                            <label class="block font-headings text-textdark mb-2">Message for the Couple (Optional)</label>
+                            <label class="block font-headings text-oldrose font-semibold mb-2">Message for the Couple (Optional)</label>
                             <textarea id="rsvp-message" rows="3" class="input-field" placeholder="Write your wishes here..."></textarea>
                         </div>
 
                         <div class="text-center pt-4">
-                            <button type="submit" id="rsvp-submit-btn" class="bg-oldrose hover:bg-opacity-90 text-white font-headings uppercase tracking-widest text-sm px-10 py-4 rounded-full transition-all shadow-md w-full md:w-auto">
+                            <button type="submit" id="rsvp-submit-btn" class="bg-oldrose hover:bg-dustypink text-white font-headings uppercase tracking-widest text-sm px-10 py-4 rounded-full transition-all shadow-md w-full md:w-auto">
                                 Send RSVP
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <!-- Success Message Container (Hidden by default) -->
-                <div id="rsvp-success" class="hidden bg-beige p-12 rounded-3xl shadow-lg border border-dustypink/20 text-center">
+                <!-- Success Message Container -->
+                <div id="rsvp-success" class="hidden bg-creamcard p-12 rounded-3xl shadow-lg border border-dustypink/30 text-center">
                     <svg class="w-16 h-16 mx-auto text-oldrose mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <h3 class="font-names text-4xl text-textdark mb-4">Thank You!</h3>
-                    <p id="display-thankyou" class="font-headings text-lg text-textlight">
+                    <h3 class="font-names text-4xl text-oldrose mb-4">Thank You!</h3>
+                    <p id="display-thankyou" class="font-headings text-lg text-textdark">
                         Thank you for confirming your attendance! We can't wait to celebrate with you.
                     </p>
                 </div>
@@ -289,15 +393,16 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-textdark text-white py-12 text-center relative">
+        <footer class="bg-[#5c3a42] text-pink-100 py-14 text-center relative">
             <div class="max-w-4xl mx-auto px-4">
                 <p class="font-names text-4xl mb-4 text-dustypink">Jason & Camilla</p>
-                <p class="font-body text-sm text-gray-400">&copy; 2026 Wedding Celebration. All Rights Reserved.</p>
+                <p class="font-body text-sm text-pink-200/80">&copy; 2026 Wedding Celebration. All Rights Reserved.</p>
             </div>
             
-            <!-- Hidden Admin Trigger (Padlock Icon in bottom right) -->
-            <button onclick="toggleAdminLogin()" class="absolute bottom-4 right-4 text-white bg-oldrose rounded-full hover:bg-dustypink transition-colors opacity-100 p-3 shadow-lg z-50" aria-label="Admin Login">
+            <!-- Clearly Visible Admin Button (Bottom Right) -->
+            <button onclick="toggleAdminLogin()" class="absolute bottom-4 right-4 text-white bg-oldrose hover:bg-dustypink rounded-full transition-colors p-3 shadow-lg z-30 flex items-center gap-1.5 text-xs font-body" aria-label="Admin Login" title="Edit Website">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                <span class="hidden sm:inline">Edit Site</span>
             </button>
         </footer>
     </div>
@@ -306,10 +411,10 @@
     <!-- ADMIN LOGIN MODAL -->
     <div id="admin-login-modal" class="fixed inset-0 z-50 bg-black/60 hidden items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl relative">
-            <button onclick="toggleAdminLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800">
+            <button onclick="closeAdminLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <h2 class="font-headings text-2xl text-textdark mb-6 text-center">Admin Login</h2>
+            <h2 class="font-headings text-2xl text-oldrose mb-6 text-center font-semibold">Couple's Website Editor</h2>
             <form id="login-form" class="space-y-4">
                 <div>
                     <label class="block font-body text-sm text-gray-600 mb-1">Email</label>
@@ -320,119 +425,241 @@
                     <input type="password" id="admin-password" required class="input-field py-2" placeholder="••••••••">
                 </div>
                 <div id="login-error" class="text-red-500 text-sm hidden font-body"></div>
-                <button type="submit" id="login-btn" class="w-full bg-textdark text-white font-headings py-3 rounded-lg hover:bg-black transition">
-                    Login
+                <button type="submit" id="login-btn" class="w-full bg-oldrose text-white font-headings py-3 rounded-lg hover:bg-dustypink transition">
+                    Login to Edit
                 </button>
-                <div class="text-center pt-2">
-                    <button type="button" onclick="handleGuestLogin()" class="text-xs text-oldrose hover:underline font-body">Test Mode: Login as Guest Admin</button>
-                </div>
             </form>
         </div>
     </div>
 
 
-    <!-- ADMIN DASHBOARD (Hidden initially) -->
-    <div id="admin-dashboard" class="fixed inset-0 z-[100] bg-beige hidden flex-col h-screen overflow-hidden">
+    <!-- ADMIN DASHBOARD -->
+    <div id="admin-dashboard" class="fixed inset-0 z-[100] bg-gray-50 hidden flex-col h-screen overflow-hidden text-gray-800">
         
         <!-- Admin Header -->
         <div class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex justify-between items-center shrink-0">
-            <h1 class="font-headings text-2xl text-oldrose font-semibold flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <h1 class="font-headings text-xl md:text-2xl text-oldrose font-semibold flex items-center gap-2">
                 Website Editor
             </h1>
-            <div class="flex items-center gap-4">
-                <button onclick="closeAdmin()" class="px-4 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">Exit Editor</button>
-                <button onclick="saveAllChanges()" id="save-global-btn" class="px-6 py-2 bg-oldrose text-white rounded shadow-sm hover:bg-opacity-90 transition flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+            <div class="flex items-center gap-3">
+                <button onclick="closeAdmin()" class="px-3 py-2 border border-gray-300 rounded text-sm hover:bg-gray-100 transition">Preview</button>
+                <button onclick="saveAllChanges()" id="save-global-btn" class="px-5 py-2 bg-oldrose text-white rounded shadow-sm hover:opacity-90 transition flex items-center gap-2 text-sm font-medium">
                     Save Changes
                 </button>
-                <button onclick="logoutAdmin()" class="text-sm text-gray-500 hover:text-red-500 transition underline">Logout</button>
+                <button onclick="logoutAdmin()" class="text-xs text-gray-500 hover:text-red-500 transition underline ml-2">Logout</button>
             </div>
         </div>
 
         <!-- Admin Content Scrollable -->
-        <div class="flex-1 overflow-y-auto p-6 md:p-10 font-body">
-            <div class="max-w-4xl mx-auto space-y-10">
+        <div class="flex-1 overflow-y-auto p-4 md:p-10 font-body">
+            <div class="max-w-4xl mx-auto space-y-8">
                 
-                <!-- Notice -->
-                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 text-sm text-blue-700">
-                    <p><strong>Note:</strong> Changes made here are saved to the database. Click "Save Changes" at the top to apply all text modifications. Images are uploaded instantly when you select a file.</p>
+                <div class="bg-rose-50 border-l-4 border-oldrose p-4 text-sm text-gray-700 rounded-r">
+                    <p><strong>Tip:</strong> Photos and music files upload immediately when selected, then click <strong>Save Changes</strong> at the top right to save all updates permanently.</p>
                 </div>
 
-                <!-- Section: General Details -->
+                <!-- 1. Theme Colors Customizer -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-xl font-headings font-semibold mb-4 border-b pb-2">General Details</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex justify-between items-center mb-4 border-b pb-2">
+                        <h2 class="text-lg font-headings font-semibold text-oldrose">1. Colors & Backdrop Theme</h2>
+                        <button type="button" onclick="resetDefaultColors()" class="text-xs text-oldrose underline hover:opacity-80">Reset to Beige & Pink</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">Wedding Date String</label>
-                            <input type="text" id="edit-date" class="input-field" placeholder="e.g. December 18, 2026">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Section: Imagery -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-xl font-headings font-semibold mb-4 border-b pb-2">Photos & Images</h2>
-                    
-                    <div class="space-y-6">
-                        <!-- Hero Image -->
-                        <div class="flex flex-col md:flex-row gap-6 items-start">
-                            <div class="w-full md:w-1/3">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Hero Background</label>
-                                <img id="preview-hero" class="w-full h-32 object-cover rounded border bg-gray-100" src="" alt="Preview">
-                            </div>
-                            <div class="flex-1 w-full pt-6">
-                                <input type="file" id="upload-hero" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'heroImage', 'preview-hero', 'upload-hero-btn')">
-                                <button onclick="document.getElementById('upload-hero').click()" id="upload-hero-btn" class="px-4 py-2 border border-oldrose text-oldrose rounded hover:bg-rose-50 transition w-full md:w-auto">
-                                    Upload / Replace Photo
-                                </button>
-                                <p class="text-xs text-gray-500 mt-2">Recommended: High resolution landscape image (JPG, PNG).</p>
+                            <label class="block text-sm text-gray-600 mb-1">Backdrop Color (Beige)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" id="edit-color-bg" value="#f5efe6" class="h-10 w-14 rounded cursor-pointer border" onchange="previewColors()">
+                                <span class="text-xs text-gray-500">Page Background</span>
                             </div>
                         </div>
-                        <hr>
-                        <!-- Ceremony Image -->
-                        <div class="flex flex-col md:flex-row gap-6 items-start">
-                            <div class="w-full md:w-1/3">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Ceremony Venue Photo</label>
-                                <img id="preview-ceremony" class="w-full h-32 object-cover rounded border bg-gray-100" src="" alt="Preview">
-                            </div>
-                            <div class="flex-1 w-full pt-6">
-                                <input type="file" id="upload-ceremony" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'ceremonyImage', 'preview-ceremony', 'upload-ceremony-btn')">
-                                <button onclick="document.getElementById('upload-ceremony').click()" id="upload-ceremony-btn" class="px-4 py-2 border border-oldrose text-oldrose rounded hover:bg-rose-50 transition w-full md:w-auto">
-                                    Upload / Replace Photo
-                                </button>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Primary Font & Buttons (Old Rose)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" id="edit-color-primary" value="#b56576" class="h-10 w-14 rounded cursor-pointer border" onchange="previewColors()">
+                                <span class="text-xs text-gray-500">Headings & Text</span>
                             </div>
                         </div>
-                        <hr>
-                        <!-- Reception Image -->
-                        <div class="flex flex-col md:flex-row gap-6 items-start">
-                            <div class="w-full md:w-1/3">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Reception Venue Photo</label>
-                                <img id="preview-reception" class="w-full h-32 object-cover rounded border bg-gray-100" src="" alt="Preview">
-                            </div>
-                            <div class="flex-1 w-full pt-6">
-                                <input type="file" id="upload-reception" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'receptionImage', 'preview-reception', 'upload-reception-btn')">
-                                <button onclick="document.getElementById('upload-reception').click()" id="upload-reception-btn" class="px-4 py-2 border border-oldrose text-oldrose rounded hover:bg-rose-50 transition w-full md:w-auto">
-                                    Upload / Replace Photo
-                                </button>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Accent Highlights (Pink)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" id="edit-color-accent" value="#e5989b" class="h-10 w-14 rounded cursor-pointer border" onchange="previewColors()">
+                                <span class="text-xs text-gray-500">Subtitles & Borders</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Section: Texts -->
+                <!-- 2. Background Music & Sounds -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-xl font-headings font-semibold mb-4 border-b pb-2">Website Text</h2>
-                    
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">2. Wedding Music & Sounds</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="edit-music-enabled" class="h-4 w-4 accent-[#b56576]" checked>
+                            <label for="edit-music-enabled" class="text-sm font-medium text-gray-700">Show floating music button for guests</label>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Song Title / Button Label</label>
+                                <input type="text" id="edit-music-title" class="input-field" placeholder="Our Wedding Song">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Upload Audio File (MP3, WAV, M4A)</label>
+                                <input type="file" id="upload-music" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)">
+                                <button type="button" onclick="document.getElementById('upload-music').click()" id="upload-music-btn" class="w-full py-2.5 px-4 border border-oldrose text-oldrose rounded-lg hover:bg-rose-50 transition text-sm font-medium">
+                                    Upload MP3 / Song File
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Or Paste Direct Audio URL (.mp3)</label>
+                            <input type="url" id="edit-music-url" class="input-field text-sm" placeholder="https://example.com/song.mp3">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Wedding Date & Venues -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">3. Wedding Date, Venues & Time</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Wedding Date</label>
+                            <input type="text" id="edit-date" class="input-field" placeholder="December 18, 2026">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Ceremony Venue</label>
+                                <input type="text" id="edit-ceremony-venue" class="input-field" placeholder="Saint Vincent">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Ceremony Time</label>
+                                <input type="text" id="edit-ceremony-time" class="input-field" placeholder="10:00 AM">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Ceremony City/Address</label>
+                                <input type="text" id="edit-ceremony-address" class="input-field" placeholder="Baguio City">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Reception Venue</label>
+                                <input type="text" id="edit-reception-venue" class="input-field" placeholder="GESTDAN CENTRUM BOKAWKAN">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Reception Time</label>
+                                <input type="text" id="edit-reception-time" class="input-field" placeholder="12:00 NN - 4:00 PM">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Reception City/Address</label>
+                                <input type="text" id="edit-reception-address" class="input-field" placeholder="Baguio City">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Our Story (How the Couple Met) -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">4. Our Story (How We Met)</h2>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Section Title</label>
+                                <input type="text" id="edit-story-title" class="input-field" placeholder="Our Love Story">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Story Headline</label>
+                                <input type="text" id="edit-story-subtitle" class="input-field" placeholder="It started with a simple moment...">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">How You Met Story</label>
+                            <textarea id="edit-story-text" rows="4" class="input-field"></textarea>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-6 items-center pt-2">
+                            <img id="preview-story" class="w-40 h-32 object-cover rounded border bg-gray-100" src="" alt="Story Preview">
+                            <div>
+                                <input type="file" id="upload-story" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'storyImage', 'preview-story', 'upload-story-btn')">
+                                <button type="button" onclick="document.getElementById('upload-story').click()" id="upload-story-btn" class="px-4 py-2 border border-oldrose text-oldrose rounded hover:bg-rose-50 transition">
+                                    Upload Couple Story Photo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Save the Date & Prenup Photos / Video -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">5. Save the Date & Prenup Media</h2>
                     <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Section Subtitle / Caption</label>
+                            <input type="text" id="edit-prenup-caption" class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Prenup Video Link (YouTube or Vimeo URL - Optional)</label>
+                            <input type="url" id="edit-prenup-video" class="input-field" placeholder="https://www.youtube.com/watch?v=...">
+                            <p class="text-xs text-gray-500 mt-1">Leave blank if you only want to display Save the Date photos.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                            <div class="border rounded-lg p-3 text-center">
+                                <label class="block text-xs font-medium text-gray-600 mb-2">Save the Date Photo 1</label>
+                                <img id="preview-prenup1" class="w-full h-36 object-cover rounded mb-3 bg-gray-100" src="" alt="Prenup 1">
+                                <input type="file" id="upload-prenup1" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'prenupImage1', 'preview-prenup1', 'upload-prenup1-btn')">
+                                <button type="button" onclick="document.getElementById('upload-prenup1').click()" id="upload-prenup1-btn" class="px-3 py-1.5 text-xs border border-oldrose text-oldrose rounded hover:bg-rose-50 w-full">Replace Photo 1</button>
+                            </div>
+                            <div class="border rounded-lg p-3 text-center">
+                                <label class="block text-xs font-medium text-gray-600 mb-2">Save the Date Photo 2</label>
+                                <img id="preview-prenup2" class="w-full h-36 object-cover rounded mb-3 bg-gray-100" src="" alt="Prenup 2">
+                                <input type="file" id="upload-prenup2" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'prenupImage2', 'preview-prenup2', 'upload-prenup2-btn')">
+                                <button type="button" onclick="document.getElementById('upload-prenup2').click()" id="upload-prenup2-btn" class="px-3 py-1.5 text-xs border border-oldrose text-oldrose rounded hover:bg-rose-50 w-full">Replace Photo 2</button>
+                            </div>
+                            <div class="border rounded-lg p-3 text-center">
+                                <label class="block text-xs font-medium text-gray-600 mb-2">Save the Date Photo 3</label>
+                                <img id="preview-prenup3" class="w-full h-36 object-cover rounded mb-3 bg-gray-100" src="" alt="Prenup 3">
+                                <input type="file" id="upload-prenup3" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'prenupImage3', 'preview-prenup3', 'upload-prenup3-btn')">
+                                <button type="button" onclick="document.getElementById('upload-prenup3').click()" id="upload-prenup3-btn" class="px-3 py-1.5 text-xs border border-oldrose text-oldrose rounded hover:bg-rose-50 w-full">Replace Photo 3</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Main Banner & Venue Photos -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">6. Banner & Venue Photos</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="border rounded-lg p-3 text-center">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Main Cover Photo</label>
+                            <img id="preview-hero" class="w-full h-32 object-cover rounded mb-3 bg-gray-100" src="" alt="Hero">
+                            <input type="file" id="upload-hero" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'heroImage', 'preview-hero', 'upload-hero-btn')">
+                            <button type="button" onclick="document.getElementById('upload-hero').click()" id="upload-hero-btn" class="px-3 py-1.5 text-xs border border-oldrose text-oldrose rounded hover:bg-rose-50 w-full">Replace Cover</button>
+                        </div>
+                        <div class="border rounded-lg p-3 text-center">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Ceremony Venue Photo</label>
+                            <img id="preview-ceremony" class="w-full h-32 object-cover rounded mb-3 bg-gray-100" src="" alt="Ceremony">
+                            <input type="file" id="upload-ceremony" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'ceremonyImage', 'preview-ceremony', 'upload-ceremony-btn')">
+                            <button type="button" onclick="document.getElementById('upload-ceremony').click()" id="upload-ceremony-btn" class="px-3 py-1.5 text-xs border border-oldrose text-oldrose rounded hover:bg-rose-50 w-full">Replace Ceremony</button>
+                        </div>
+                        <div class="border rounded-lg p-3 text-center">
+                            <label class="block text-xs font-medium text-gray-600 mb-2">Reception Venue Photo</label>
+                            <img id="preview-reception" class="w-full h-32 object-cover rounded mb-3 bg-gray-100" src="" alt="Reception">
+                            <input type="file" id="upload-reception" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'receptionImage', 'preview-reception', 'upload-reception-btn')">
+                            <button type="button" onclick="document.getElementById('upload-reception').click()" id="upload-reception-btn" class="px-3 py-1.5 text-xs border border-oldrose text-oldrose rounded hover:bg-rose-50 w-full">Replace Reception</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Invitation, Verse & RSVP Thank You -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">7. Invitation, Bible Verse & Thank You Note</h2>
+                    <div class="space-y-4">
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">Invitation Wording</label>
                             <textarea id="edit-invitation" rows="3" class="input-field"></textarea>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Bible Verse</label>
-                                <textarea id="edit-verse" rows="3" class="input-field"></textarea>
+                                <textarea id="edit-verse" rows="2" class="input-field"></textarea>
                             </div>
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Bible Reference</label>
@@ -446,7 +673,7 @@
                     </div>
                 </div>
 
-                <div class="pb-20"></div> <!-- spacing -->
+                <div class="pb-16"></div>
             </div>
         </div>
     </div>
@@ -454,15 +681,13 @@
 
     <!-- Firebase & Application Logic -->
     <script type="module">
-        // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
-// Firebase Configuration (Connected to your actual database!)
+        // Your Connected Firebase Project
         const appId = 'jason-camilla-wedding';
-        
         const firebaseConfig = {
             apiKey: "AIzaSyAqARMnJFqfFiC5txuA-dsF55rC8uf5wH8",
             authDomain: "jason-camilla-wedding.firebaseapp.com",
@@ -472,125 +697,215 @@
             appId: "1:761257760032:web:0933464b22a62a03dff345"
         };
 
-        let app, db, auth, storage;
-        const hasFirebase = true;
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const storage = getStorage(app);
 
-        app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        auth = getAuth(app);
-        storage = getStorage(app);
-    
-
-        // App State
+        // Default Site Content
         let siteData = {
             date: "December 18, 2026",
+            ceremonyVenue: "Saint Vincent",
+            ceremonyTime: "10:00 AM",
+            ceremonyAddress: "Baguio City",
+            receptionVenue: "GESTDAN CENTRUM BOKAWKAN",
+            receptionTime: "12:00 NN - 4:00 PM",
+            receptionAddress: "Baguio City",
+            storyTitle: "Our Love Story",
+            storySubtitle: "It started with a simple moment...",
+            storyText: "We first crossed paths when we least expected it, turning an ordinary day into the start of our favorite chapter. From endless conversations over coffee to spontaneous weekend trips up to Baguio, every moment brought us closer together.\n\nNow, surrounded by the people we love most, we are ready to say \"I do\" and begin our forever.",
+            storyImage: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80",
+            prenupCaption: "A glimpse of our journey leading up to December 18, 2026.",
+            prenupVideoUrl: "",
+            prenupImage1: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
+            prenupImage2: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80",
+            prenupImage3: "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=800&q=80",
             invitationWording: "Together with their families, we invite you to share in the joy of the beginning of our new life together.",
             bibleVerse: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud.",
             bibleRef: "1 Corinthians 13:4",
             thankYouMessage: "Thank you for confirming your attendance! We can't wait to celebrate with you.",
             heroImage: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80",
             ceremonyImage: "https://images.unsplash.com/photo-1548625361-b51fbce91fb5?auto=format&fit=crop&w=800&q=80",
-            receptionImage: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80"
+            receptionImage: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80",
+            colorBg: "#f5efe6",
+            colorPrimary: "#b56576",
+            colorAccent: "#e5989b",
+            musicEnabled: true,
+            musicTitle: "Play Music",
+            musicUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
         };
         
-        let isAuthenticated = false;
+        let isAdminLoggedIn = false;
+        let isMusicPlaying = false;
 
-        // Initialize Application
         async function init() {
-            // Setup scroll reveal listener
             window.addEventListener('scroll', revealElements);
             revealElements();
-
-            // Setup Countdown
             setInterval(updateCountdown, 1000);
+            updateCountdown();
 
-            if (!hasFirebase) {
-                console.log("Running on GitHub Pages. Database features disabled.");
-                updateWebsiteUI();
-                return;
-            }
-
-            // Setup Auth Listener
             onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    isAuthenticated = true;
-                    // Pre-fill Admin
+                if (user && !user.isAnonymous) {
+                    isAdminLoggedIn = true;
                     populateAdminDashboard();
                 } else {
-                    isAuthenticated = false;
+                    isAdminLoggedIn = false;
                 }
             });
 
-            // Handle Initial Auth token if provided by artifact env
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                try {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } catch(e) {
-                    console.warn("Custom token auth failed", e);
+            try {
+                if (!auth.currentUser) {
+                    await signInAnonymously(auth);
                 }
-            } else {
-                 try {
-                     await signInAnonymously(auth);
-                 } catch(e) {
-                     console.warn("Anon auth failed", e);
-                 }
+            } catch (e) {
+                console.warn("Guest read init:", e.message);
             }
 
-            // Fetch public configuration from Firestore AFTER authentication
             await loadSiteConfig();
         }
 
-        // ==========================================
-        // DATA FETCHING & RENDERING
-        // ==========================================
         async function loadSiteConfig() {
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'main');
                 const docSnap = await getDoc(docRef);
-                
                 if (docSnap.exists()) {
                     siteData = { ...siteData, ...docSnap.data() };
                 }
                 updateWebsiteUI();
             } catch (error) {
-                console.warn("Using default config (Database will sync on first save).", error.message);
-                // Fallback to default siteData loaded initially
+                console.warn("Loaded default wedding data:", error.message);
                 updateWebsiteUI();
             }
         }
 
+        // Background Music Player Controls
+        window.toggleBgMusic = () => {
+            const audio = document.getElementById('bg-audio');
+            const eq = document.getElementById('music-eq');
+            const label = document.getElementById('music-btn-label');
+
+            if (!audio.src) {
+                showToast("No song configured yet.");
+                return;
+            }
+
+            if (isMusicPlaying) {
+                audio.pause();
+                isMusicPlaying = false;
+                eq.classList.remove('eq-playing');
+                label.textContent = siteData.musicTitle || "Play Music";
+            } else {
+                audio.play().then(() => {
+                    isMusicPlaying = true;
+                    eq.classList.add('eq-playing');
+                    label.textContent = "Playing...";
+                }).catch(() => {
+                    showToast("Tap again to play music.");
+                });
+            }
+        };
+
+        function convertToEmbedUrl(url) {
+            if (!url) return "";
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([^&?/\s]+)/);
+            if (ytMatch && ytMatch[1]) {
+                return `https://www.youtube.com/embed/${ytMatch[1]}`;
+            }
+            const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+            if (vimeoMatch && vimeoMatch[1]) {
+                return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+            }
+            return url;
+        }
+
+        function applyThemeColors(bg, primary, accent) {
+            const root = document.documentElement;
+            root.style.setProperty('--color-bg', bg || '#f5efe6');
+            root.style.setProperty('--color-primary', primary || '#b56576');
+            root.style.setProperty('--color-accent', accent || '#e5989b');
+        }
+
         function updateWebsiteUI() {
-            // Update Texts
+            // Apply Colors
+            applyThemeColors(siteData.colorBg, siteData.colorPrimary, siteData.colorAccent);
+
+            // Music Setup
+            const audio = document.getElementById('bg-audio');
+            const widget = document.getElementById('music-player-widget');
+            const label = document.getElementById('music-btn-label');
+            if (siteData.musicEnabled !== false && siteData.musicUrl) {
+                widget.classList.remove('hidden');
+                if (audio.src !== siteData.musicUrl) {
+                    audio.src = siteData.musicUrl;
+                    isMusicPlaying = false;
+                    document.getElementById('music-eq').classList.remove('eq-playing');
+                }
+                if (!isMusicPlaying) {
+                    label.textContent = siteData.musicTitle || "Play Music";
+                }
+            } else {
+                widget.classList.add('hidden');
+                audio.pause();
+                isMusicPlaying = false;
+            }
+
+            // Date & Venues
             document.getElementById('display-date').textContent = siteData.date;
+            document.getElementById('display-ceremony-venue').textContent = siteData.ceremonyVenue;
+            document.getElementById('display-ceremony-time').textContent = siteData.ceremonyTime;
+            document.getElementById('display-ceremony-address').textContent = siteData.ceremonyAddress;
+            document.getElementById('display-reception-venue').textContent = siteData.receptionVenue;
+            document.getElementById('display-reception-time').textContent = siteData.receptionTime;
+            document.getElementById('display-reception-address').textContent = siteData.receptionAddress;
+
+            // Story Section
+            document.getElementById('display-story-title').textContent = siteData.storyTitle;
+            document.getElementById('display-story-subtitle').textContent = siteData.storySubtitle;
+            document.getElementById('display-story-text').textContent = siteData.storyText;
+            document.getElementById('story-img-display').src = siteData.storyImage;
+
+            // Prenup & Save the Date Section
+            document.getElementById('display-prenup-caption').textContent = siteData.prenupCaption;
+            document.getElementById('prenup-img-1').src = siteData.prenupImage1;
+            document.getElementById('prenup-img-2').src = siteData.prenupImage2;
+            document.getElementById('prenup-img-3').src = siteData.prenupImage3;
+
+            const videoWrapper = document.getElementById('prenup-video-wrapper');
+            const videoFrame = document.getElementById('prenup-video-frame');
+            const embedUrl = convertToEmbedUrl(siteData.prenupVideoUrl);
+            if (embedUrl) {
+                videoFrame.src = embedUrl;
+                videoWrapper.classList.remove('hidden');
+            } else {
+                videoFrame.src = "";
+                videoWrapper.classList.add('hidden');
+            }
+
+            // Invitation, Verse & RSVP
             document.getElementById('display-invitation').textContent = siteData.invitationWording;
             document.getElementById('display-verse').textContent = `"${siteData.bibleVerse}"`;
             document.getElementById('display-reference').textContent = siteData.bibleRef;
             document.getElementById('display-thankyou').textContent = siteData.thankYouMessage;
 
-            // Update Images
+            // Main Images
             document.getElementById('hero-img-display').src = siteData.heroImage;
             document.getElementById('ceremony-img-display').src = siteData.ceremonyImage;
             document.getElementById('reception-img-display').src = siteData.receptionImage;
         }
 
-
-        // ==========================================
-        // UI & ANIMATIONS
-        // ==========================================
         function revealElements() {
             const reveals = document.querySelectorAll('.reveal');
             for (let i = 0; i < reveals.length; i++) {
                 const windowHeight = window.innerHeight;
                 const elementTop = reveals[i].getBoundingClientRect().top;
-                const elementVisible = 100;
-                if (elementTop < windowHeight - elementVisible) {
+                if (elementTop < windowHeight - 80) {
                     reveals[i].classList.add('active');
                 }
             }
         }
 
         function updateCountdown() {
-            const dest = new Date("Dec 18, 2026 14:00:00").getTime();
+            const dest = new Date("Dec 18, 2026 10:00:00").getTime();
             const now = new Date().getTime();
             const diff = dest - now;
 
@@ -619,17 +934,13 @@
             toast.classList.remove('opacity-0', 'pointer-events-none');
             setTimeout(() => {
                 toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 3000);
+            }, 3500);
         }
 
-        // ==========================================
-        // RSVP HANDLING
-        // ==========================================
+        // RSVP Submission
         document.getElementById('rsvp-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('rsvp-submit-btn');
-            
-            // Gather form data
             const formData = {
                 name: document.getElementById('rsvp-name').value,
                 count: document.getElementById('rsvp-count').value,
@@ -639,44 +950,33 @@
                 timestamp: new Date().toISOString()
             };
 
-            // Loading state
             btn.innerHTML = '<span class="loader"></span> Sending...';
             btn.disabled = true;
 
             try {
-                // If a Google Apps Script URL is provided, try fetching. 
-                // Using no-cors if not configured correctly on server, but generally POST requires proper setup.
                 if (window.APPS_SCRIPT_URL && window.APPS_SCRIPT_URL.trim() !== "") {
                     await fetch(window.APPS_SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(formData)
                     });
                 } else {
-                    // Mock network delay if no URL provided
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                 }
-
-                // Success
                 document.getElementById('rsvp-form-container').classList.add('hidden');
                 document.getElementById('rsvp-success').classList.remove('hidden');
             } catch (error) {
-                console.error("RSVP Submission Error: ", error);
                 showToast("An error occurred. Please try again.");
                 btn.innerHTML = 'Send RSVP';
                 btn.disabled = false;
             }
         });
 
-
-        // ==========================================
-        // ADMIN AUTH & DASHBOARD
-        // ==========================================
+        // Admin Controls
         window.toggleAdminLogin = () => {
-            if (isAuthenticated) {
+            if (isAdminLoggedIn) {
+                populateAdminDashboard();
                 openAdmin();
             } else {
                 document.getElementById('admin-login-modal').classList.remove('hidden');
@@ -689,15 +989,8 @@
             document.getElementById('admin-login-modal').classList.remove('flex');
         };
 
-        // Standard Email/Password Login
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            if (!hasFirebase) {
-                showToast("Admin login requires a connected database. It is currently disabled on GitHub Pages.");
-                return;
-            }
-
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
             const errorDiv = document.getElementById('login-error');
@@ -708,42 +1001,21 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
+                isAdminLoggedIn = true;
+                populateAdminDashboard();
                 closeAdminLogin();
                 openAdmin();
             } catch (error) {
-                errorDiv.textContent = error.message;
+                errorDiv.textContent = "Invalid email or password.";
                 errorDiv.classList.remove('hidden');
             } finally {
-                btn.innerHTML = 'Login';
+                btn.innerHTML = 'Login to Edit';
             }
         });
 
-        // Test/Guest Login (Uses Anonymous Auth or Custom Token)
-        window.handleGuestLogin = async () => {
-             if (!hasFirebase) {
-                 showToast("Admin login requires a connected database. It is currently disabled on GitHub Pages.");
-                 return;
-             }
-
-             const btn = document.getElementById('login-btn');
-             btn.innerHTML = '<span class="loader"></span>';
-             try {
-                // If not already authenticated, sign in anonymously
-                if(!auth.currentUser) {
-                    await signInAnonymously(auth);
-                }
-                closeAdminLogin();
-                openAdmin();
-             } catch(error) {
-                 alert("Login failed: " + error.message);
-             } finally {
-                 btn.innerHTML = 'Login';
-             }
-        };
-
         window.logoutAdmin = async () => {
             await signOut(auth);
-            isAuthenticated = false;
+            isAdminLoggedIn = false;
             closeAdmin();
             showToast("Logged out successfully");
         };
@@ -751,7 +1023,7 @@
         window.openAdmin = () => {
             document.getElementById('admin-dashboard').classList.remove('hidden');
             document.getElementById('admin-dashboard').classList.add('flex');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            document.body.style.overflow = 'hidden';
         };
 
         window.closeAdmin = () => {
@@ -760,8 +1032,49 @@
             document.body.style.overflow = '';
         };
 
+        window.previewColors = () => {
+            const bg = document.getElementById('edit-color-bg').value;
+            const primary = document.getElementById('edit-color-primary').value;
+            const accent = document.getElementById('edit-color-accent').value;
+            applyThemeColors(bg, primary, accent);
+        };
+
+        window.resetDefaultColors = () => {
+            document.getElementById('edit-color-bg').value = "#f5efe6";
+            document.getElementById('edit-color-primary').value = "#b56576";
+            document.getElementById('edit-color-accent').value = "#e5989b";
+            previewColors();
+            showToast("Colors reset to Beige & Old Rose");
+        };
+
         function populateAdminDashboard() {
+            document.getElementById('edit-color-bg').value = siteData.colorBg || '#f5efe6';
+            document.getElementById('edit-color-primary').value = siteData.colorPrimary || '#b56576';
+            document.getElementById('edit-color-accent').value = siteData.colorAccent || '#e5989b';
+
+            document.getElementById('edit-music-enabled').checked = siteData.musicEnabled !== false;
+            document.getElementById('edit-music-title').value = siteData.musicTitle || 'Play Music';
+            document.getElementById('edit-music-url').value = siteData.musicUrl || '';
+
             document.getElementById('edit-date').value = siteData.date || '';
+            document.getElementById('edit-ceremony-venue').value = siteData.ceremonyVenue || '';
+            document.getElementById('edit-ceremony-time').value = siteData.ceremonyTime || '';
+            document.getElementById('edit-ceremony-address').value = siteData.ceremonyAddress || '';
+            document.getElementById('edit-reception-venue').value = siteData.receptionVenue || '';
+            document.getElementById('edit-reception-time').value = siteData.receptionTime || '';
+            document.getElementById('edit-reception-address').value = siteData.receptionAddress || '';
+
+            document.getElementById('edit-story-title').value = siteData.storyTitle || '';
+            document.getElementById('edit-story-subtitle').value = siteData.storySubtitle || '';
+            document.getElementById('edit-story-text').value = siteData.storyText || '';
+            document.getElementById('preview-story').src = siteData.storyImage;
+
+            document.getElementById('edit-prenup-caption').value = siteData.prenupCaption || '';
+            document.getElementById('edit-prenup-video').value = siteData.prenupVideoUrl || '';
+            document.getElementById('preview-prenup1').src = siteData.prenupImage1;
+            document.getElementById('preview-prenup2').src = siteData.prenupImage2;
+            document.getElementById('preview-prenup3').src = siteData.prenupImage3;
+
             document.getElementById('edit-invitation').value = siteData.invitationWording || '';
             document.getElementById('edit-verse').value = siteData.bibleVerse || '';
             document.getElementById('edit-reference').value = siteData.bibleRef || '';
@@ -772,12 +1085,9 @@
             document.getElementById('preview-reception').src = siteData.receptionImage;
         }
 
-        // ==========================================
-        // DATA SAVING & IMAGE UPLOAD
-        // ==========================================
         window.saveAllChanges = async () => {
-            if (!auth.currentUser) {
-                showToast("You must be logged in to save.");
+            if (!auth.currentUser || auth.currentUser.isAnonymous) {
+                showToast("Please log in as admin to save.");
                 return;
             }
 
@@ -787,12 +1097,32 @@
             btn.disabled = true;
 
             const updatedData = {
+                colorBg: document.getElementById('edit-color-bg').value,
+                colorPrimary: document.getElementById('edit-color-primary').value,
+                colorAccent: document.getElementById('edit-color-accent').value,
+                musicEnabled: document.getElementById('edit-music-enabled').checked,
+                musicTitle: document.getElementById('edit-music-title').value,
+                musicUrl: document.getElementById('edit-music-url').value,
                 date: document.getElementById('edit-date').value,
+                ceremonyVenue: document.getElementById('edit-ceremony-venue').value,
+                ceremonyTime: document.getElementById('edit-ceremony-time').value,
+                ceremonyAddress: document.getElementById('edit-ceremony-address').value,
+                receptionVenue: document.getElementById('edit-reception-venue').value,
+                receptionTime: document.getElementById('edit-reception-time').value,
+                receptionAddress: document.getElementById('edit-reception-address').value,
+                storyTitle: document.getElementById('edit-story-title').value,
+                storySubtitle: document.getElementById('edit-story-subtitle').value,
+                storyText: document.getElementById('edit-story-text').value,
+                storyImage: siteData.storyImage,
+                prenupCaption: document.getElementById('edit-prenup-caption').value,
+                prenupVideoUrl: document.getElementById('edit-prenup-video').value,
+                prenupImage1: siteData.prenupImage1,
+                prenupImage2: siteData.prenupImage2,
+                prenupImage3: siteData.prenupImage3,
                 invitationWording: document.getElementById('edit-invitation').value,
                 bibleVerse: document.getElementById('edit-verse').value,
                 bibleRef: document.getElementById('edit-reference').value,
                 thankYouMessage: document.getElementById('edit-thankyou').value,
-                // Images are already updated in siteData upon upload
                 heroImage: siteData.heroImage,
                 ceremonyImage: siteData.ceremonyImage,
                 receptionImage: siteData.receptionImage
@@ -802,14 +1132,42 @@
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'config', 'main');
                 await setDoc(docRef, updatedData, { merge: true });
                 
-                // Update local state and UI
                 siteData = { ...siteData, ...updatedData };
                 updateWebsiteUI();
-                
-                showToast("Changes saved successfully!");
+                showToast("All changes saved & published!");
             } catch (error) {
-                console.error("Error saving data:", error);
-                showToast("Failed to save changes. Check console.");
+                console.error("Save error:", error);
+                showToast("Failed to save. Check Firebase rules.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        window.handleAudioUpload = async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!auth.currentUser || auth.currentUser.isAnonymous) {
+                showToast("Please log in as admin to upload audio.");
+                return;
+            }
+
+            const btn = document.getElementById('upload-music-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loader border-t-oldrose"></span> Uploading Song...';
+            btn.disabled = true;
+
+            try {
+                const storageRef = ref(storage, `artifacts/${appId}/public/audio/${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(storageRef);
+
+                siteData.musicUrl = downloadURL;
+                document.getElementById('edit-music-url').value = downloadURL;
+                showToast("Song uploaded! Click 'Save Changes' to publish.");
+            } catch (error) {
+                console.error("Audio upload error:", error);
+                showToast("Audio upload failed. Check Storage rules.");
             } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
@@ -819,8 +1177,8 @@
         window.handleImageUpload = async (event, stateKey, previewId, btnId) => {
             const file = event.target.files[0];
             if (!file) return;
-            if (!auth.currentUser) {
-                showToast("You must be logged in to upload images.");
+            if (!auth.currentUser || auth.currentUser.isAnonymous) {
+                showToast("Please log in as admin to upload photos.");
                 return;
             }
 
@@ -832,34 +1190,23 @@
             btn.disabled = true;
 
             try {
-                // Upload to Firebase Storage following strict path rules
-                // Using artifacts/{appId}/public/images/{filename} is safe for public reads if rules allow,
-                // but standard storage ref is generally fine.
                 const storageRef = ref(storage, `artifacts/${appId}/public/images/${Date.now()}_${file.name}`);
                 await uploadBytes(storageRef, file);
-                
                 const downloadURL = await getDownloadURL(storageRef);
                 
-                // Update local state & preview immediately
                 siteData[stateKey] = downloadURL;
                 preview.src = downloadURL;
-                
-                // Note: The actual global save happens when "Save Changes" is clicked, 
-                // but the image is uploaded right away.
-                
-                showToast("Image uploaded! Remember to Save Changes.");
+                showToast("Photo uploaded! Click 'Save Changes' to publish.");
             } catch (error) {
-                console.error("Upload error: ", error);
-                showToast("Failed to upload image.");
+                console.error("Upload error:", error);
+                showToast("Upload failed. Check Storage rules.");
             } finally {
                 btn.innerHTML = originalBtnText;
                 btn.disabled = false;
             }
         };
 
-        // Boot
         window.onload = init;
-
     </script>
 </body>
 </html>
