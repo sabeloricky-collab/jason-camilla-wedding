@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     
-    <!-- Dynamic Theme Variables & Tailwind Config -->
+    <!-- Dynamic Theme Variables -->
     <style id="theme-variables">
         :root {
             --color-bg: #f5efe6;        /* Warm Beige Backdrop */
@@ -58,6 +58,22 @@
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.83v58.34h-58.34l-.83-.83V0h58.34zM29.5 48.5c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm16-16c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9zm0-16c-3.86 0-7 3.14-7 7s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7z' fill='%23b56576' fill-opacity='0.07' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
+        /* Envelope Curtain Transition */
+        #envelope-overlay {
+            transition: transform 1.1s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.9s ease;
+        }
+        #envelope-overlay.opened {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Wax Seal Styling */
+        .wax-seal {
+            background: radial-gradient(circle at 30% 30%, var(--color-accent), var(--color-primary));
+            box-shadow: 0 10px 25px rgba(109, 76, 82, 0.35), inset 0 2px 6px rgba(255,255,255,0.4), inset 0 -4px 8px rgba(0,0,0,0.25);
+        }
+
         /* Smooth reveal animations */
         .reveal {
             opacity: 0;
@@ -99,7 +115,7 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Equalizer Animation for Playing Music */
+        /* Equalizer Animation */
         @keyframes eqBar {
             0%, 100% { height: 4px; }
             50% { height: 14px; }
@@ -122,6 +138,31 @@
         window.APPS_SCRIPT_URL = ""; 
     </script>
 
+    <!-- ENVELOPE / WAX SEAL INTRO COVER -->
+    <div id="envelope-overlay" class="fixed inset-0 z-[90] bg-floral-pattern flex flex-col items-center justify-center p-6 text-center select-none">
+        <div class="max-w-lg w-full bg-creamcard/95 backdrop-blur-md p-10 md:p-14 rounded-3xl shadow-2xl border-2 border-dustypink/40 relative">
+            <div class="absolute inset-3 border border-dustypink/25 rounded-2xl pointer-events-none"></div>
+            
+            <p class="font-body text-xs uppercase tracking-[0.3em] text-dustypink font-semibold mb-4">You Are Cordially Invited To The Wedding Of</p>
+            <h1 class="font-names text-5xl md:text-7xl text-oldrose mb-3">Jason & Camilla</h1>
+            <p id="envelope-date-display" class="font-headings text-base md:text-lg text-textdark tracking-widest uppercase mb-8">December 18, 2026 &bull; Baguio City</p>
+
+            <!-- Interactive Wax Seal Button -->
+            <button onclick="openEnvelope()" class="group relative mx-auto w-24 h-24 rounded-full wax-seal flex items-center justify-center text-white transition-transform duration-500 hover:scale-110 active:scale-95 cursor-pointer mb-6" aria-label="Open Invitation">
+                <div class="w-20 h-20 rounded-full border border-white/40 flex items-center justify-center">
+                    <span class="font-names text-3xl tracking-wider drop-shadow">J&amp;C</span>
+                </div>
+            </button>
+
+            <div>
+                <button onclick="openEnvelope()" class="font-headings text-sm uppercase tracking-[0.25em] text-oldrose font-semibold group-hover:text-dustypink underline underline-offset-8 decoration-dustypink cursor-pointer">
+                    Tap Seal to Open Invitation
+                </button>
+                <p id="envelope-music-hint" class="text-[11px] text-textlight mt-3 italic">Music will play automatically upon opening</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden Background Audio Element -->
     <audio id="bg-audio" loop preload="metadata"></audio>
 
@@ -137,7 +178,7 @@
         </button>
     </div>
 
-    <!-- UI Overlay for Messages (Toast) -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-[110] bg-oldrose text-white px-6 py-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300">
         <span id="toast-message"></span>
     </div>
@@ -149,25 +190,31 @@
         <nav class="fixed w-full z-40 top-0 transition-all duration-300 bg-creamcard/95 backdrop-blur-md shadow-sm py-4 border-b border-dustypink/20" id="navbar">
             <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
                 <a href="#" class="font-names text-3xl text-oldrose">J & C</a>
-                <div class="hidden md:flex space-x-8 font-headings text-sm uppercase tracking-widest text-oldrose font-semibold">
-                    <a href="#our-story" class="hover:text-dustypink transition-colors">Our Story</a>
-                    <a href="#our-wedding" class="hover:text-dustypink transition-colors">The Wedding</a>
+                <div class="hidden lg:flex space-x-6 font-headings text-xs uppercase tracking-widest text-oldrose font-semibold">
+                    <a href="#our-story" class="hover:text-dustypink transition-colors">Story</a>
+                    <a href="#our-wedding" class="hover:text-dustypink transition-colors">Venues</a>
+                    <a href="#entourage" class="hover:text-dustypink transition-colors">Entourage</a>
+                    <a href="#attire" class="hover:text-dustypink transition-colors">Attire</a>
                     <a href="#prenup" class="hover:text-dustypink transition-colors">Prenup</a>
-                    <a href="#invitation" class="hover:text-dustypink transition-colors">Invitation</a>
+                    <a href="#gifts" class="hover:text-dustypink transition-colors">Gifts</a>
+                    <a href="#faqs" class="hover:text-dustypink transition-colors">FAQs</a>
                     <a href="#rsvp" class="hover:text-dustypink transition-colors">RSVP</a>
                 </div>
                 <!-- Mobile Menu Button -->
-                <button class="md:hidden text-oldrose" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <button class="lg:hidden text-oldrose" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
             </div>
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden bg-creamcard border-t border-dustypink/20 mt-4 pb-4 px-4 flex flex-col space-y-4 font-headings text-center text-sm uppercase tracking-widest text-oldrose">
-                <a href="#our-story" class="block pt-4 hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Our Story</a>
-                <a href="#our-wedding" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">The Wedding</a>
-                <a href="#prenup" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Prenup</a>
-                <a href="#invitation" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Invitation</a>
-                <a href="#rsvp" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">RSVP</a>
+            <div id="mobile-menu" class="hidden lg:hidden bg-creamcard border-t border-dustypink/20 mt-4 pb-4 px-4 flex flex-col space-y-3 font-headings text-center text-xs uppercase tracking-widest text-oldrose">
+                <a href="#our-story" class="block pt-3 hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Our Story</a>
+                <a href="#our-wedding" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">When & Where</a>
+                <a href="#entourage" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Entourage</a>
+                <a href="#attire" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Attire Guide</a>
+                <a href="#prenup" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Prenup Gallery</a>
+                <a href="#gifts" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Gift Guide</a>
+                <a href="#faqs" class="block hover:text-dustypink" onclick="document.getElementById('mobile-menu').classList.add('hidden')">FAQs</a>
+                <a href="#rsvp" class="block hover:text-dustypink font-bold" onclick="document.getElementById('mobile-menu').classList.add('hidden')">RSVP</a>
             </div>
         </nav>
 
@@ -195,7 +242,7 @@
             </div>
         </section>
 
-        <!-- ROW 1: Our Story (How the Couple Met) -->
+        <!-- Our Story (How the Couple Met) -->
         <section id="our-story" class="py-24 bg-beige border-b border-dustypink/20">
             <div class="max-w-5xl mx-auto px-4 reveal">
                 <div class="text-center mb-14">
@@ -223,46 +270,161 @@
             </div>
         </section>
 
-        <!-- The Wedding Details -->
+        <!-- When & Where + Map & Waze Navigation Buttons -->
         <section id="our-wedding" class="py-24 bg-floral-pattern">
             <div class="max-w-5xl mx-auto px-4">
                 <div class="text-center mb-16 reveal">
                     <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-4">When & Where</h2>
-                    <p class="font-body text-textlight max-w-xl mx-auto">Please join us in celebrating our special day at these beautiful locations.</p>
+                    <p class="font-body text-textlight max-w-xl mx-auto">Please join us in celebrating our special day at these locations.</p>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-12 lg:gap-16">
                     <!-- Ceremony -->
-                    <div class="text-center reveal bg-creamcard p-8 rounded-3xl shadow-md border border-dustypink/30">
-                        <div class="w-full h-64 mb-6 rounded-2xl overflow-hidden shadow-inner relative">
-                            <img id="ceremony-img-display" src="https://images.unsplash.com/photo-1548625361-b51fbce91fb5?auto=format&fit=crop&w=800&q=80" alt="Ceremony Venue" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+                    <div class="text-center reveal bg-creamcard p-8 rounded-3xl shadow-md border border-dustypink/30 flex flex-col justify-between">
+                        <div>
+                            <div class="w-full h-64 mb-6 rounded-2xl overflow-hidden shadow-inner relative">
+                                <img id="ceremony-img-display" src="https://images.unsplash.com/photo-1548625361-b51fbce91fb5?auto=format&fit=crop&w=800&q=80" alt="Ceremony Venue" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+                            </div>
+                            <h3 class="font-headings text-2xl mb-2 text-oldrose font-semibold">The Ceremony</h3>
+                            <p id="display-ceremony-time" class="font-body font-semibold text-dustypink text-lg mb-3">10:00 AM</p>
+                            <p id="display-ceremony-venue" class="font-headings text-lg text-oldrose font-medium mb-1">Saint Vincent</p>
+                            <p id="display-ceremony-address" class="font-body text-textlight mb-6">Baguio City</p>
                         </div>
-                        <h3 class="font-headings text-2xl mb-2 text-oldrose font-semibold">The Ceremony</h3>
-                        <p id="display-ceremony-time" class="font-body font-semibold text-dustypink text-lg mb-3">10:00 AM</p>
-                        <p id="display-ceremony-venue" class="font-headings text-lg text-oldrose font-medium mb-1">Saint Vincent</p>
-                        <p id="display-ceremony-address" class="font-body text-textlight">Baguio City</p>
+                        <div class="flex flex-wrap justify-center gap-3 pt-2">
+                            <a id="ceremony-gmaps-link" href="https://maps.google.com/?q=Saint+Vincent+Parish+Baguio+City" target="_blank" rel="noopener" class="px-4 py-2 rounded-full bg-oldrose text-white text-xs font-medium hover:bg-dustypink transition flex items-center gap-1.5 shadow-sm">
+                                <span>Google Maps</span>
+                            </a>
+                            <a id="ceremony-waze-link" href="https://waze.com/ul?q=Saint+Vincent+Parish+Baguio+City" target="_blank" rel="noopener" class="px-4 py-2 rounded-full border border-oldrose text-oldrose text-xs font-medium hover:bg-oldrose hover:text-white transition flex items-center gap-1.5">
+                                <span>Open Waze</span>
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Reception -->
-                    <div class="text-center reveal bg-creamcard p-8 rounded-3xl shadow-md border border-dustypink/30">
-                        <div class="w-full h-64 mb-6 rounded-2xl overflow-hidden shadow-inner relative">
-                            <img id="reception-img-display" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Reception Venue" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+                    <div class="text-center reveal bg-creamcard p-8 rounded-3xl shadow-md border border-dustypink/30 flex flex-col justify-between">
+                        <div>
+                            <div class="w-full h-64 mb-6 rounded-2xl overflow-hidden shadow-inner relative">
+                                <img id="reception-img-display" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80" alt="Reception Venue" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+                            </div>
+                            <h3 class="font-headings text-2xl mb-2 text-oldrose font-semibold">The Reception</h3>
+                            <p id="display-reception-time" class="font-body font-semibold text-dustypink text-lg mb-3">12:00 NN - 4:00 PM</p>
+                            <p id="display-reception-venue" class="font-headings text-lg text-oldrose font-medium mb-1">GESTDAN CENTRUM BOKAWKAN</p>
+                            <p id="display-reception-address" class="font-body text-textlight mb-6">Baguio City</p>
                         </div>
-                        <h3 class="font-headings text-2xl mb-2 text-oldrose font-semibold">The Reception</h3>
-                        <p id="display-reception-time" class="font-body font-semibold text-dustypink text-lg mb-3">12:00 NN - 4:00 PM</p>
-                        <p id="display-reception-venue" class="font-headings text-lg text-oldrose font-medium mb-1">GESTDAN CENTRUM BOKAWKAN</p>
-                        <p id="display-reception-address" class="font-body text-textlight">Baguio City</p>
+                        <div class="flex flex-wrap justify-center gap-3 pt-2">
+                            <a id="reception-gmaps-link" href="https://maps.google.com/?q=Gestdan+Centrum+Bokawkan+Baguio+City" target="_blank" rel="noopener" class="px-4 py-2 rounded-full bg-oldrose text-white text-xs font-medium hover:bg-dustypink transition flex items-center gap-1.5 shadow-sm">
+                                <span>Google Maps</span>
+                            </a>
+                            <a id="reception-waze-link" href="https://waze.com/ul?q=Gestdan+Centrum+Bokawkan+Baguio+City" target="_blank" rel="noopener" class="px-4 py-2 rounded-full border border-oldrose text-oldrose text-xs font-medium hover:bg-oldrose hover:text-white transition flex items-center gap-1.5">
+                                <span>Open Waze</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ROW 2: Save the Date & Prenup Gallery / Video -->
+        <!-- THE ENTOURAGE & PRINCIPAL SPONSORS -->
+        <section id="entourage" class="py-24 bg-beige border-t border-b border-dustypink/20">
+            <div class="max-w-5xl mx-auto px-4 reveal">
+                <div class="text-center mb-14">
+                    <p class="font-body text-xs uppercase tracking-[0.25em] text-dustypink font-semibold mb-2">With The Blessing Of Our Families</p>
+                    <h2 class="font-names text-5xl md:text-6xl text-oldrose">The Entourage</h2>
+                </div>
+
+                <div class="bg-creamcard rounded-3xl p-8 md:p-14 shadow-md border border-dustypink/30 text-center space-y-12">
+                    <!-- Parents -->
+                    <div class="grid md:grid-cols-2 gap-8 pb-8 border-b border-dustypink/20">
+                        <div>
+                            <h3 class="font-headings text-sm uppercase tracking-[0.2em] text-dustypink font-semibold mb-3">Parents of the Groom</h3>
+                            <p id="display-parents-groom" class="font-headings text-lg text-oldrose leading-relaxed whitespace-pre-line">Mr. &amp; Mrs. Groom's Parents</p>
+                        </div>
+                        <div>
+                            <h3 class="font-headings text-sm uppercase tracking-[0.2em] text-dustypink font-semibold mb-3">Parents of the Bride</h3>
+                            <p id="display-parents-bride" class="font-headings text-lg text-oldrose leading-relaxed whitespace-pre-line">Mr. &amp; Mrs. Bride's Parents</p>
+                        </div>
+                    </div>
+
+                    <!-- Principal Sponsors -->
+                    <div class="pb-8 border-b border-dustypink/20">
+                        <h3 class="font-headings text-sm uppercase tracking-[0.2em] text-dustypink font-semibold mb-4">Principal Sponsors</h3>
+                        <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                            <div>
+                                <p class="text-xs uppercase tracking-widest text-textlight mb-2">Ninong</p>
+                                <p id="display-ninongs" class="font-body text-textdark leading-loose whitespace-pre-line">Mr. Juan Dela Cruz
+Mr. Pedro Penduko</p>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase tracking-widest text-textlight mb-2">Ninang</p>
+                                <p id="display-ninangs" class="font-body text-textdark leading-loose whitespace-pre-line">Mrs. Maria Clara
+Mrs. Gabriela Silang</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary / Bridal Party -->
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-headings text-sm uppercase tracking-[0.2em] text-dustypink font-semibold mb-2">Best Man &amp; Groomsmen</h3>
+                            <p id="display-groomsmen" class="font-body text-textdark leading-loose whitespace-pre-line">Best Man: Name Here
+Groomsman 1
+Groomsman 2</p>
+                        </div>
+                        <div>
+                            <h3 class="font-headings text-sm uppercase tracking-[0.2em] text-dustypink font-semibold mb-2">Maid of Honor &amp; Bridesmaids</h3>
+                            <p id="display-bridesmaids" class="font-body text-textdark leading-loose whitespace-pre-line">Maid of Honor: Name Here
+Bridesmaid 1
+Bridesmaid 2</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ATTIRE & COLOR PALETTE GUIDE -->
+        <section id="attire" class="py-24 bg-floral-pattern">
+            <div class="max-w-4xl mx-auto px-4 reveal text-center">
+                <p class="font-body text-xs uppercase tracking-[0.25em] text-dustypink font-semibold mb-2">Dress Code</p>
+                <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-4">Attire &amp; Color Palette</h2>
+                <p id="display-attire-subtitle" class="font-headings text-xl text-oldrose italic mb-6">Formal / Semi-Formal Attire</p>
+                <p id="display-attire-notes" class="font-body text-textdark max-w-2xl mx-auto leading-relaxed mb-10">
+                    We kindly encourage our guests to wear these romantic hues on our special day. Please reserve white and ivory for the bride.
+                </p>
+
+                <!-- 5 Circular Color Swatches -->
+                <div class="bg-creamcard p-8 rounded-3xl shadow-md border border-dustypink/30 inline-block">
+                    <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+                        <div class="flex flex-col items-center">
+                            <div id="swatch-1" class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-md border-4 border-white" style="background-color: #b56576;"></div>
+                            <span id="swatch-label-1" class="text-xs font-medium text-textdark mt-2">Old Rose</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div id="swatch-2" class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-md border-4 border-white" style="background-color: #e5989b;"></div>
+                            <span id="swatch-label-2" class="text-xs font-medium text-textdark mt-2">Dusty Pink</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div id="swatch-3" class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-md border-4 border-white" style="background-color: #f2d5d5;"></div>
+                            <span id="swatch-label-3" class="text-xs font-medium text-textdark mt-2">Blush</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div id="swatch-4" class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-md border-4 border-white" style="background-color: #e6ccb2;"></div>
+                            <span id="swatch-label-4" class="text-xs font-medium text-textdark mt-2">Champagne</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div id="swatch-5" class="w-16 h-16 md:w-20 md:h-20 rounded-full shadow-md border-4 border-white" style="background-color: #d4a373;"></div>
+                            <span id="swatch-label-5" class="text-xs font-medium text-textdark mt-2">Warm Taupe</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Save the Date & Prenup Gallery / Video -->
         <section id="prenup" class="py-24 bg-beige border-t border-b border-dustypink/20">
             <div class="max-w-6xl mx-auto px-4 reveal">
                 <div class="text-center mb-14">
                     <p class="font-body text-xs uppercase tracking-[0.25em] text-dustypink font-semibold mb-2">Captured Moments</p>
-                    <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-3">Save the Date & Prenup</h2>
+                    <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-3">Save the Date &amp; Prenup</h2>
                     <p id="display-prenup-caption" class="font-body text-textlight max-w-xl mx-auto">A glimpse of our journey leading up to December 18, 2026.</p>
                 </div>
 
@@ -296,37 +458,116 @@
             </div>
         </section>
 
-        <!-- Digital Invitation Card -->
-        <section id="invitation" class="py-24 bg-floral-pattern relative overflow-hidden">
-            <div class="max-w-4xl mx-auto px-4 relative z-10 text-center reveal">
-                <div class="bg-creamcard p-8 md:p-16 rounded-3xl shadow-xl border-4 border-white outline outline-1 outline-dustypink/40 relative">
-                    <div class="absolute top-0 left-0 w-24 h-24 bg-dustypink/20 rounded-br-full -z-10"></div>
-                    <div class="absolute bottom-0 right-0 w-24 h-24 bg-dustypink/20 rounded-tl-full -z-10"></div>
-
-                    <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-8">You're Invited</h2>
-                    <p id="display-invitation" class="font-headings text-lg md:text-xl leading-relaxed text-oldrose max-w-2xl mx-auto italic mb-8">
-                        Together with their families, we invite you to share in the joy of the beginning of our new life together.
+        <!-- GIFT GUIDE & REGISTRY / QR CODE -->
+        <section id="gifts" class="py-24 bg-floral-pattern">
+            <div class="max-w-4xl mx-auto px-4 reveal text-center">
+                <p class="font-body text-xs uppercase tracking-[0.25em] text-dustypink font-semibold mb-2">Note On Gifts</p>
+                <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-6">Gift Guide</h2>
+                
+                <div class="bg-creamcard p-8 md:p-12 rounded-3xl shadow-md border border-dustypink/30">
+                    <p id="display-gift-note" class="font-headings text-lg md:text-xl text-oldrose italic leading-relaxed max-w-2xl mx-auto mb-8">
+                        Your presence at our wedding is the greatest gift of all. However, should you wish to bless us with a gift, a monetary contribution toward our future home would be warmly appreciated.
                     </p>
-                    <p class="font-names text-4xl text-dustypink mt-8">Jason & Camilla</p>
+
+                    <div id="gift-details-wrapper" class="flex flex-col md:flex-row items-center justify-center gap-8 pt-4 border-t border-dustypink/20">
+                        <div id="gift-qr-container" class="hidden">
+                            <div class="p-3 bg-white rounded-2xl shadow border border-dustypink/30 inline-block">
+                                <img id="display-gift-qr" src="" alt="Gift QR Code" class="w-44 h-44 object-contain">
+                            </div>
+                            <p class="text-xs text-textlight mt-2">Scan via GCash / Maya / Bank App</p>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <p class="text-xs uppercase tracking-widest text-dustypink font-semibold mb-2">Account Details</p>
+                            <p id="display-gift-account" class="font-body text-textdark leading-relaxed whitespace-pre-line">GCash: 09XX-XXX-XXXX (Jason / Camilla)
+BPI / BDO: Account Details Here</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Bible Verse -->
-        <section class="py-20 bg-beige text-center reveal border-t border-b border-dustypink/20">
-            <div class="max-w-3xl mx-auto px-6">
-                <svg class="w-10 h-10 mx-auto text-dustypink mb-6 opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                <p id="display-verse" class="font-headings text-xl md:text-2xl leading-relaxed text-oldrose mb-6 italic">
-                    "Love is patient, love is kind. It does not envy, it does not boast, it is not proud."
-                </p>
-                <p id="display-reference" class="font-body text-sm uppercase tracking-widest text-dustypink font-semibold">
-                    1 Corinthians 13:4
-                </p>
+        <!-- Digital Invitation Card & Bible Verse -->
+        <section id="invitation" class="py-24 bg-beige relative overflow-hidden border-t border-b border-dustypink/20">
+            <div class="max-w-4xl mx-auto px-4 relative z-10 text-center reveal space-y-16">
+                <div class="bg-creamcard p-8 md:p-16 rounded-3xl shadow-xl border-4 border-white outline outline-1 outline-dustypink/40 relative">
+                    <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-8">You're Invited</h2>
+                    <p id="display-invitation" class="font-headings text-lg md:text-xl leading-relaxed text-oldrose max-w-2xl mx-auto italic mb-8">
+                        Together with their families, we invite you to share in the joy of the beginning of our new life together.
+                    </p>
+                    <p class="font-names text-4xl text-dustypink mt-8">Jason &amp; Camilla</p>
+                </div>
+
+                <!-- Bible Verse -->
+                <div class="max-w-3xl mx-auto px-4">
+                    <svg class="w-9 h-9 mx-auto text-dustypink mb-4 opacity-80" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    <p id="display-verse" class="font-headings text-xl md:text-2xl leading-relaxed text-oldrose mb-4 italic">
+                        "Love is patient, love is kind. It does not envy, it does not boast, it is not proud."
+                    </p>
+                    <p id="display-reference" class="font-body text-sm uppercase tracking-widest text-dustypink font-semibold">
+                        1 Corinthians 13:4
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQs ACCORDION SECTION -->
+        <section id="faqs" class="py-24 bg-floral-pattern">
+            <div class="max-w-3xl mx-auto px-4 reveal">
+                <div class="text-center mb-12">
+                    <p class="font-body text-xs uppercase tracking-[0.25em] text-dustypink font-semibold mb-2">Helpful Information</p>
+                    <h2 class="font-names text-5xl md:text-6xl text-oldrose">Frequently Asked Questions</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- FAQ 1 -->
+                    <details class="group bg-creamcard rounded-2xl border border-dustypink/30 shadow-sm p-6 cursor-pointer" open>
+                        <summary class="flex justify-between items-center font-headings text-lg text-oldrose font-semibold list-none">
+                            <span id="display-faq-q1">What time should I arrive at the ceremony?</span>
+                            <span class="text-dustypink transition-transform group-open:rotate-180">&#9662;</span>
+                        </summary>
+                        <p id="display-faq-a1" class="font-body text-textdark mt-3 pt-3 border-t border-dustypink/15 leading-relaxed">
+                            Please arrive at least 30 minutes before the 10:00 AM ceremony at Saint Vincent so everyone can be comfortably seated before the entourage begins.
+                        </p>
+                    </details>
+
+                    <!-- FAQ 2 -->
+                    <details class="group bg-creamcard rounded-2xl border border-dustypink/30 shadow-sm p-6 cursor-pointer">
+                        <summary class="flex justify-between items-center font-headings text-lg text-oldrose font-semibold list-none">
+                            <span id="display-faq-q2">Can I bring a plus one?</span>
+                            <span class="text-dustypink transition-transform group-open:rotate-180">&#9662;</span>
+                        </summary>
+                        <p id="display-faq-a2" class="font-body text-textdark mt-3 pt-3 border-t border-dustypink/15 leading-relaxed">
+                            Due to venue capacity at Gestdan Centrum Bokawkan, we can only accommodate the guests formally listed on your invitation. Thank you for understanding!
+                        </p>
+                    </details>
+
+                    <!-- FAQ 3 -->
+                    <details class="group bg-creamcard rounded-2xl border border-dustypink/30 shadow-sm p-6 cursor-pointer">
+                        <summary class="flex justify-between items-center font-headings text-lg text-oldrose font-semibold list-none">
+                            <span id="display-faq-q3">Are children allowed at the wedding?</span>
+                            <span class="text-dustypink transition-transform group-open:rotate-180">&#9662;</span>
+                        </summary>
+                        <p id="display-faq-a3" class="font-body text-textdark mt-3 pt-3 border-t border-dustypink/15 leading-relaxed">
+                            While we love your little ones, our celebration is an adults-only event with the exception of children in our immediate family and entourage.
+                        </p>
+                    </details>
+
+                    <!-- FAQ 4 -->
+                    <details class="group bg-creamcard rounded-2xl border border-dustypink/30 shadow-sm p-6 cursor-pointer">
+                        <summary class="flex justify-between items-center font-headings text-lg text-oldrose font-semibold list-none">
+                            <span id="display-faq-q4">Is parking available at the venues?</span>
+                            <span class="text-dustypink transition-transform group-open:rotate-180">&#9662;</span>
+                        </summary>
+                        <p id="display-faq-a4" class="font-body text-textdark mt-3 pt-3 border-t border-dustypink/15 leading-relaxed">
+                            Yes, dedicated guest parking is available at both Saint Vincent and Gestdan Centrum Bokawkan.
+                        </p>
+                    </details>
+                </div>
             </div>
         </section>
 
         <!-- RSVP Form Section -->
-        <section id="rsvp" class="py-24 bg-floral-pattern">
+        <section id="rsvp" class="py-24 bg-beige border-t border-dustypink/20">
             <div class="max-w-3xl mx-auto px-4 reveal">
                 <div class="text-center mb-12">
                     <h2 class="font-names text-5xl md:text-6xl text-oldrose mb-4">RSVP</h2>
@@ -395,7 +636,7 @@
         <!-- Footer -->
         <footer class="bg-[#5c3a42] text-pink-100 py-14 text-center relative">
             <div class="max-w-4xl mx-auto px-4">
-                <p class="font-names text-4xl mb-4 text-dustypink">Jason & Camilla</p>
+                <p class="font-names text-4xl mb-4 text-dustypink">Jason &amp; Camilla</p>
                 <p class="font-body text-sm text-pink-200/80">&copy; 2026 Wedding Celebration. All Rights Reserved.</p>
             </div>
             
@@ -455,14 +696,18 @@
             <div class="max-w-4xl mx-auto space-y-8">
                 
                 <div class="bg-rose-50 border-l-4 border-oldrose p-4 text-sm text-gray-700 rounded-r">
-                    <p><strong>Tip:</strong> Photos and music files upload immediately when selected, then click <strong>Save Changes</strong> at the top right to save all updates permanently.</p>
+                    <p><strong>Tip:</strong> Photos, QR codes, and music files upload immediately when chosen, then click <strong>Save Changes</strong> at the top right to publish all updates permanently.</p>
                 </div>
 
-                <!-- 1. Theme Colors Customizer -->
+                <!-- 1. Theme Colors & Envelope Intro -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div class="flex justify-between items-center mb-4 border-b pb-2">
-                        <h2 class="text-lg font-headings font-semibold text-oldrose">1. Colors & Backdrop Theme</h2>
-                        <button type="button" onclick="resetDefaultColors()" class="text-xs text-oldrose underline hover:opacity-80">Reset to Beige & Pink</button>
+                        <h2 class="text-lg font-headings font-semibold text-oldrose">1. Theme Colors &amp; Envelope Cover</h2>
+                        <button type="button" onclick="resetDefaultColors()" class="text-xs text-oldrose underline hover:opacity-80">Reset to Beige &amp; Pink</button>
+                    </div>
+                    <div class="mb-5 pb-4 border-b border-gray-100 flex items-center gap-3">
+                        <input type="checkbox" id="edit-envelope-enabled" class="h-4 w-4 accent-[#b56576]" checked>
+                        <label for="edit-envelope-enabled" class="text-sm font-medium text-gray-700">Enable "Tap Wax Seal to Open Invitation" cover screen</label>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <div>
@@ -473,17 +718,17 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-600 mb-1">Primary Font & Buttons (Old Rose)</label>
+                            <label class="block text-sm text-gray-600 mb-1">Primary Font &amp; Buttons (Old Rose)</label>
                             <div class="flex items-center gap-2">
                                 <input type="color" id="edit-color-primary" value="#b56576" class="h-10 w-14 rounded cursor-pointer border" onchange="previewColors()">
-                                <span class="text-xs text-gray-500">Headings & Text</span>
+                                <span class="text-xs text-gray-500">Headings &amp; Text</span>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">Accent Highlights (Pink)</label>
                             <div class="flex items-center gap-2">
                                 <input type="color" id="edit-color-accent" value="#e5989b" class="h-10 w-14 rounded cursor-pointer border" onchange="previewColors()">
-                                <span class="text-xs text-gray-500">Subtitles & Borders</span>
+                                <span class="text-xs text-gray-500">Subtitles &amp; Borders</span>
                             </div>
                         </div>
                     </div>
@@ -491,16 +736,16 @@
 
                 <!-- 2. Background Music & Sounds -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">2. Wedding Music & Sounds</h2>
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">2. Wedding Music &amp; Sounds</h2>
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
                             <input type="checkbox" id="edit-music-enabled" class="h-4 w-4 accent-[#b56576]" checked>
-                            <label for="edit-music-enabled" class="text-sm font-medium text-gray-700">Show floating music button for guests</label>
+                            <label for="edit-music-enabled" class="text-sm font-medium text-gray-700">Enable background music (auto-plays when guest opens envelope)</label>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm text-gray-600 mb-1">Song Title / Button Label</label>
-                                <input type="text" id="edit-music-title" class="input-field" placeholder="Our Wedding Song">
+                                <label class="block text-sm text-gray-600 mb-1">Music Button Label</label>
+                                <input type="text" id="edit-music-title" class="input-field" placeholder="Play Music">
                             </div>
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Upload Audio File (MP3, WAV, M4A)</label>
@@ -517,9 +762,9 @@
                     </div>
                 </div>
 
-                <!-- 3. Wedding Date & Venues -->
+                <!-- 3. Wedding Date, Venues & Map Links -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">3. Wedding Date, Venues & Time</h2>
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">3. Wedding Date, Venues &amp; Map Links</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">Wedding Date</label>
@@ -539,7 +784,18 @@
                                 <input type="text" id="edit-ceremony-address" class="input-field" placeholder="Baguio City">
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Ceremony Google Maps URL</label>
+                                <input type="url" id="edit-ceremony-gmaps" class="input-field text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Ceremony Waze URL</label>
+                                <input type="url" id="edit-ceremony-waze" class="input-field text-xs">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-100">
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Reception Venue</label>
                                 <input type="text" id="edit-reception-venue" class="input-field" placeholder="GESTDAN CENTRUM BOKAWKAN">
@@ -553,21 +809,129 @@
                                 <input type="text" id="edit-reception-address" class="input-field" placeholder="Baguio City">
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Reception Google Maps URL</label>
+                                <input type="url" id="edit-reception-gmaps" class="input-field text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Reception Waze URL</label>
+                                <input type="url" id="edit-reception-waze" class="input-field text-xs">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 4. Our Story (How the Couple Met) -->
+                <!-- 4. The Entourage & Principal Sponsors -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">4. Our Story (How We Met)</h2>
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">4. The Entourage &amp; Principal Sponsors</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Parents of the Groom</label>
+                            <textarea id="edit-parents-groom" rows="2" class="input-field text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Parents of the Bride</label>
+                            <textarea id="edit-parents-bride" rows="2" class="input-field text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Principal Sponsors (Ninong - one per line)</label>
+                            <textarea id="edit-ninongs" rows="4" class="input-field text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Principal Sponsors (Ninang - one per line)</label>
+                            <textarea id="edit-ninangs" rows="4" class="input-field text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Best Man &amp; Groomsmen</label>
+                            <textarea id="edit-groomsmen" rows="4" class="input-field text-sm"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Maid of Honor &amp; Bridesmaids</label>
+                            <textarea id="edit-bridesmaids" rows="4" class="input-field text-sm"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Attire & Color Swatches -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">5. Attire &amp; Color Palette Swatches</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Dress Code Title</label>
+                            <input type="text" id="edit-attire-subtitle" class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Attire Instructions</label>
+                            <textarea id="edit-attire-notes" rows="2" class="input-field"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Swatch 1</label>
+                                <input type="color" id="edit-swatch-1" class="w-full h-9 rounded cursor-pointer border mb-1">
+                                <input type="text" id="edit-swatch-label-1" class="input-field text-xs py-1">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Swatch 2</label>
+                                <input type="color" id="edit-swatch-2" class="w-full h-9 rounded cursor-pointer border mb-1">
+                                <input type="text" id="edit-swatch-label-2" class="input-field text-xs py-1">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Swatch 3</label>
+                                <input type="color" id="edit-swatch-3" class="w-full h-9 rounded cursor-pointer border mb-1">
+                                <input type="text" id="edit-swatch-label-3" class="input-field text-xs py-1">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Swatch 4</label>
+                                <input type="color" id="edit-swatch-4" class="w-full h-9 rounded cursor-pointer border mb-1">
+                                <input type="text" id="edit-swatch-label-4" class="input-field text-xs py-1">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-500 mb-1">Swatch 5</label>
+                                <input type="color" id="edit-swatch-5" class="w-full h-9 rounded cursor-pointer border mb-1">
+                                <input type="text" id="edit-swatch-label-5" class="input-field text-xs py-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Gift Guide & QR Code -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">6. Gift Guide &amp; GCash / Bank QR Code</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Gift Note Message</label>
+                            <textarea id="edit-gift-note" rows="3" class="input-field"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Bank / GCash Account Details</label>
+                            <textarea id="edit-gift-account" rows="2" class="input-field text-sm"></textarea>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4 items-center pt-2">
+                            <img id="preview-gift-qr" class="w-28 h-28 object-contain rounded border bg-gray-50 p-1" src="" alt="QR Preview">
+                            <div class="space-y-2">
+                                <input type="file" id="upload-gift-qr" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'giftQrImage', 'preview-gift-qr', 'upload-gift-qr-btn')">
+                                <button type="button" onclick="document.getElementById('upload-gift-qr').click()" id="upload-gift-qr-btn" class="px-4 py-2 border border-oldrose text-oldrose rounded hover:bg-rose-50 transition text-sm">
+                                    Upload GCash / Bank QR Code
+                                </button>
+                                <button type="button" onclick="clearGiftQr()" class="block text-xs text-gray-500 underline">Remove QR Code</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Our Story (How the Couple Met) -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">7. Our Story (How We Met)</h2>
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Section Title</label>
-                                <input type="text" id="edit-story-title" class="input-field" placeholder="Our Love Story">
+                                <input type="text" id="edit-story-title" class="input-field">
                             </div>
                             <div>
                                 <label class="block text-sm text-gray-600 mb-1">Story Headline</label>
-                                <input type="text" id="edit-story-subtitle" class="input-field" placeholder="It started with a simple moment...">
+                                <input type="text" id="edit-story-subtitle" class="input-field">
                             </div>
                         </div>
                         <div>
@@ -586,9 +950,9 @@
                     </div>
                 </div>
 
-                <!-- 5. Save the Date & Prenup Photos / Video -->
+                <!-- 8. Save the Date & Prenup Photos / Video -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">5. Save the Date & Prenup Media</h2>
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">8. Save the Date &amp; Prenup Media</h2>
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">Section Subtitle / Caption</label>
@@ -597,7 +961,6 @@
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">Prenup Video Link (YouTube or Vimeo URL - Optional)</label>
                             <input type="url" id="edit-prenup-video" class="input-field" placeholder="https://www.youtube.com/watch?v=...">
-                            <p class="text-xs text-gray-500 mt-1">Leave blank if you only want to display Save the Date photos.</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
@@ -623,10 +986,33 @@
                     </div>
                 </div>
 
-                <!-- 6. Main Banner & Venue Photos -->
+                <!-- 9. FAQs (Frequently Asked Questions) -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">6. Banner & Venue Photos</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">9. Frequently Asked Questions (FAQs)</h2>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-gray-50 rounded-lg space-y-2">
+                            <input type="text" id="edit-faq-q1" class="input-field text-sm font-medium" placeholder="Question 1">
+                            <textarea id="edit-faq-a1" rows="2" class="input-field text-sm" placeholder="Answer 1"></textarea>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg space-y-2">
+                            <input type="text" id="edit-faq-q2" class="input-field text-sm font-medium" placeholder="Question 2">
+                            <textarea id="edit-faq-a2" rows="2" class="input-field text-sm" placeholder="Answer 2"></textarea>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg space-y-2">
+                            <input type="text" id="edit-faq-q3" class="input-field text-sm font-medium" placeholder="Question 3">
+                            <textarea id="edit-faq-a3" rows="2" class="input-field text-sm" placeholder="Answer 3"></textarea>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg space-y-2">
+                            <input type="text" id="edit-faq-q4" class="input-field text-sm font-medium" placeholder="Question 4">
+                            <textarea id="edit-faq-a4" rows="2" class="input-field text-sm" placeholder="Answer 4"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10. Main Banner, Venue Photos & Invitation Text -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">10. Banner Photos, Invitation &amp; Verse</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="border rounded-lg p-3 text-center">
                             <label class="block text-xs font-medium text-gray-600 mb-2">Main Cover Photo</label>
                             <img id="preview-hero" class="w-full h-32 object-cover rounded mb-3 bg-gray-100" src="" alt="Hero">
@@ -646,15 +1032,11 @@
                             <button type="button" onclick="document.getElementById('upload-reception').click()" id="upload-reception-btn" class="px-3 py-1.5 text-xs border border-oldrose text-oldrose rounded hover:bg-rose-50 w-full">Replace Reception</button>
                         </div>
                     </div>
-                </div>
 
-                <!-- 7. Invitation, Verse & RSVP Thank You -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 class="text-lg font-headings font-semibold mb-4 border-b pb-2 text-oldrose">7. Invitation, Bible Verse & Thank You Note</h2>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm text-gray-600 mb-1">Invitation Wording</label>
-                            <textarea id="edit-invitation" rows="3" class="input-field"></textarea>
+                            <textarea id="edit-invitation" rows="2" class="input-field"></textarea>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -704,13 +1086,34 @@
 
         // Default Site Content
         let siteData = {
+            envelopeEnabled: true,
             date: "December 18, 2026",
             ceremonyVenue: "Saint Vincent",
             ceremonyTime: "10:00 AM",
             ceremonyAddress: "Baguio City",
+            ceremonyGmaps: "https://maps.google.com/?q=Saint+Vincent+Parish+Baguio+City",
+            ceremonyWaze: "https://waze.com/ul?q=Saint+Vincent+Parish+Baguio+City",
             receptionVenue: "GESTDAN CENTRUM BOKAWKAN",
             receptionTime: "12:00 NN - 4:00 PM",
             receptionAddress: "Baguio City",
+            receptionGmaps: "https://maps.google.com/?q=Gestdan+Centrum+Bokawkan+Baguio+City",
+            receptionWaze: "https://waze.com/ul?q=Gestdan+Centrum+Bokawkan+Baguio+City",
+            parentsGroom: "Mr. & Mrs. Groom's Parents",
+            parentsBride: "Mr. & Mrs. Bride's Parents",
+            ninongs: "Mr. Juan Dela Cruz\nMr. Pedro Penduko",
+            ninangs: "Mrs. Maria Clara\nMrs. Gabriela Silang",
+            groomsmen: "Best Man: Name Here\nGroomsman 1\nGroomsman 2",
+            bridesmaids: "Maid of Honor: Name Here\nBridesmaid 1\nBridesmaid 2",
+            attireSubtitle: "Formal / Semi-Formal Attire",
+            attireNotes: "We kindly encourage our guests to wear these romantic hues on our special day. Please reserve white and ivory for the bride.",
+            swatch1: "#b56576", swatchLabel1: "Old Rose",
+            swatch2: "#e5989b", swatchLabel2: "Dusty Pink",
+            swatch3: "#f2d5d5", swatchLabel3: "Blush",
+            swatch4: "#e6ccb2", swatchLabel4: "Champagne",
+            swatch5: "#d4a373", swatchLabel5: "Warm Taupe",
+            giftNote: "Your presence at our wedding is the greatest gift of all. However, should you wish to bless us with a gift, a monetary contribution toward our future home would be warmly appreciated.",
+            giftAccount: "GCash: 09XX-XXX-XXXX (Jason / Camilla)\nBPI / BDO: Account Details Here",
+            giftQrImage: "",
             storyTitle: "Our Love Story",
             storySubtitle: "It started with a simple moment...",
             storyText: "We first crossed paths when we least expected it, turning an ordinary day into the start of our favorite chapter. From endless conversations over coffee to spontaneous weekend trips up to Baguio, every moment brought us closer together.\n\nNow, surrounded by the people we love most, we are ready to say \"I do\" and begin our forever.",
@@ -720,6 +1123,14 @@
             prenupImage1: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
             prenupImage2: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=800&q=80",
             prenupImage3: "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=800&q=80",
+            faqQ1: "What time should I arrive at the ceremony?",
+            faqA1: "Please arrive at least 30 minutes before the 10:00 AM ceremony at Saint Vincent so everyone can be comfortably seated before the entourage begins.",
+            faqQ2: "Can I bring a plus one?",
+            faqA2: "Due to venue capacity at Gestdan Centrum Bokawkan, we can only accommodate the guests formally listed on your invitation. Thank you for understanding!",
+            faqQ3: "Are children allowed at the wedding?",
+            faqA3: "While we love your little ones, our celebration is an adults-only event with the exception of children in our immediate family and entourage.",
+            faqQ4: "Is parking available at the venues?",
+            faqA4: "Yes, dedicated guest parking is available at both Saint Vincent and Gestdan Centrum Bokawkan.",
             invitationWording: "Together with their families, we invite you to share in the joy of the beginning of our new life together.",
             bibleVerse: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud.",
             bibleRef: "1 Corinthians 13:4",
@@ -778,6 +1189,24 @@
             }
         }
 
+        // Open Envelope Curtain & Auto-Start Music
+        window.openEnvelope = () => {
+            const overlay = document.getElementById('envelope-overlay');
+            overlay.classList.add('opened');
+            document.body.style.overflow = '';
+
+            if (siteData.musicEnabled !== false && siteData.musicUrl && !isMusicPlaying) {
+                const audio = document.getElementById('bg-audio');
+                const eq = document.getElementById('music-eq');
+                const label = document.getElementById('music-btn-label');
+                audio.play().then(() => {
+                    isMusicPlaying = true;
+                    eq.classList.add('eq-playing');
+                    label.textContent = "Playing...";
+                }).catch(() => {});
+            }
+        };
+
         // Background Music Player Controls
         window.toggleBgMusic = () => {
             const audio = document.getElementById('bg-audio');
@@ -826,8 +1255,16 @@
         }
 
         function updateWebsiteUI() {
-            // Apply Colors
             applyThemeColors(siteData.colorBg, siteData.colorPrimary, siteData.colorAccent);
+
+            // Envelope Cover Toggle
+            const envelope = document.getElementById('envelope-overlay');
+            document.getElementById('envelope-date-display').textContent = `${siteData.date} • Baguio City`;
+            if (siteData.envelopeEnabled === false) {
+                envelope.classList.add('hidden');
+            } else if (!envelope.classList.contains('opened')) {
+                envelope.classList.remove('hidden');
+            }
 
             // Music Setup
             const audio = document.getElementById('bg-audio');
@@ -849,14 +1286,47 @@
                 isMusicPlaying = false;
             }
 
-            // Date & Venues
+            // Date & Venues + Maps
             document.getElementById('display-date').textContent = siteData.date;
             document.getElementById('display-ceremony-venue').textContent = siteData.ceremonyVenue;
             document.getElementById('display-ceremony-time').textContent = siteData.ceremonyTime;
             document.getElementById('display-ceremony-address').textContent = siteData.ceremonyAddress;
+            document.getElementById('ceremony-gmaps-link').href = siteData.ceremonyGmaps || '#';
+            document.getElementById('ceremony-waze-link').href = siteData.ceremonyWaze || '#';
+
             document.getElementById('display-reception-venue').textContent = siteData.receptionVenue;
             document.getElementById('display-reception-time').textContent = siteData.receptionTime;
             document.getElementById('display-reception-address').textContent = siteData.receptionAddress;
+            document.getElementById('reception-gmaps-link').href = siteData.receptionGmaps || '#';
+            document.getElementById('reception-waze-link').href = siteData.receptionWaze || '#';
+
+            // Entourage
+            document.getElementById('display-parents-groom').textContent = siteData.parentsGroom;
+            document.getElementById('display-parents-bride').textContent = siteData.parentsBride;
+            document.getElementById('display-ninongs').textContent = siteData.ninongs;
+            document.getElementById('display-ninangs').textContent = siteData.ninangs;
+            document.getElementById('display-groomsmen').textContent = siteData.groomsmen;
+            document.getElementById('display-bridesmaids').textContent = siteData.bridesmaids;
+
+            // Attire & Color Swatches
+            document.getElementById('display-attire-subtitle').textContent = siteData.attireSubtitle;
+            document.getElementById('display-attire-notes').textContent = siteData.attireNotes;
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`swatch-${i}`).style.backgroundColor = siteData[`swatch${i}`];
+                document.getElementById(`swatch-label-${i}`).textContent = siteData[`swatchLabel${i}`];
+            }
+
+            // Gift Guide & QR
+            document.getElementById('display-gift-note').textContent = siteData.giftNote;
+            document.getElementById('display-gift-account').textContent = siteData.giftAccount;
+            const qrContainer = document.getElementById('gift-qr-container');
+            const qrImg = document.getElementById('display-gift-qr');
+            if (siteData.giftQrImage) {
+                qrImg.src = siteData.giftQrImage;
+                qrContainer.classList.remove('hidden');
+            } else {
+                qrContainer.classList.add('hidden');
+            }
 
             // Story Section
             document.getElementById('display-story-title').textContent = siteData.storyTitle;
@@ -879,6 +1349,12 @@
             } else {
                 videoFrame.src = "";
                 videoWrapper.classList.add('hidden');
+            }
+
+            // FAQs
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`display-faq-q${i}`).textContent = siteData[`faqQ${i}`];
+                document.getElementById(`display-faq-a${i}`).textContent = siteData[`faqA${i}`];
             }
 
             // Invitation, Verse & RSVP
@@ -1047,7 +1523,14 @@
             showToast("Colors reset to Beige & Old Rose");
         };
 
+        window.clearGiftQr = () => {
+            siteData.giftQrImage = "";
+            document.getElementById('preview-gift-qr').src = "";
+            showToast("QR Code removed. Click 'Save Changes' to apply.");
+        };
+
         function populateAdminDashboard() {
+            document.getElementById('edit-envelope-enabled').checked = siteData.envelopeEnabled !== false;
             document.getElementById('edit-color-bg').value = siteData.colorBg || '#f5efe6';
             document.getElementById('edit-color-primary').value = siteData.colorPrimary || '#b56576';
             document.getElementById('edit-color-accent').value = siteData.colorAccent || '#e5989b';
@@ -1060,9 +1543,31 @@
             document.getElementById('edit-ceremony-venue').value = siteData.ceremonyVenue || '';
             document.getElementById('edit-ceremony-time').value = siteData.ceremonyTime || '';
             document.getElementById('edit-ceremony-address').value = siteData.ceremonyAddress || '';
+            document.getElementById('edit-ceremony-gmaps').value = siteData.ceremonyGmaps || '';
+            document.getElementById('edit-ceremony-waze').value = siteData.ceremonyWaze || '';
             document.getElementById('edit-reception-venue').value = siteData.receptionVenue || '';
             document.getElementById('edit-reception-time').value = siteData.receptionTime || '';
             document.getElementById('edit-reception-address').value = siteData.receptionAddress || '';
+            document.getElementById('edit-reception-gmaps').value = siteData.receptionGmaps || '';
+            document.getElementById('edit-reception-waze').value = siteData.receptionWaze || '';
+
+            document.getElementById('edit-parents-groom').value = siteData.parentsGroom || '';
+            document.getElementById('edit-parents-bride').value = siteData.parentsBride || '';
+            document.getElementById('edit-ninongs').value = siteData.ninongs || '';
+            document.getElementById('edit-ninangs').value = siteData.ninangs || '';
+            document.getElementById('edit-groomsmen').value = siteData.groomsmen || '';
+            document.getElementById('edit-bridesmaids').value = siteData.bridesmaids || '';
+
+            document.getElementById('edit-attire-subtitle').value = siteData.attireSubtitle || '';
+            document.getElementById('edit-attire-notes').value = siteData.attireNotes || '';
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`edit-swatch-${i}`).value = siteData[`swatch${i}`];
+                document.getElementById(`edit-swatch-label-${i}`).value = siteData[`swatchLabel${i}`];
+            }
+
+            document.getElementById('edit-gift-note').value = siteData.giftNote || '';
+            document.getElementById('edit-gift-account').value = siteData.giftAccount || '';
+            document.getElementById('preview-gift-qr').src = siteData.giftQrImage || '';
 
             document.getElementById('edit-story-title').value = siteData.storyTitle || '';
             document.getElementById('edit-story-subtitle').value = siteData.storySubtitle || '';
@@ -1074,6 +1579,11 @@
             document.getElementById('preview-prenup1').src = siteData.prenupImage1;
             document.getElementById('preview-prenup2').src = siteData.prenupImage2;
             document.getElementById('preview-prenup3').src = siteData.prenupImage3;
+
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`edit-faq-q${i}`).value = siteData[`faqQ${i}`] || '';
+                document.getElementById(`edit-faq-a${i}`).value = siteData[`faqA${i}`] || '';
+            }
 
             document.getElementById('edit-invitation').value = siteData.invitationWording || '';
             document.getElementById('edit-verse').value = siteData.bibleVerse || '';
@@ -1097,6 +1607,7 @@
             btn.disabled = true;
 
             const updatedData = {
+                envelopeEnabled: document.getElementById('edit-envelope-enabled').checked,
                 colorBg: document.getElementById('edit-color-bg').value,
                 colorPrimary: document.getElementById('edit-color-primary').value,
                 colorAccent: document.getElementById('edit-color-accent').value,
@@ -1107,9 +1618,34 @@
                 ceremonyVenue: document.getElementById('edit-ceremony-venue').value,
                 ceremonyTime: document.getElementById('edit-ceremony-time').value,
                 ceremonyAddress: document.getElementById('edit-ceremony-address').value,
+                ceremonyGmaps: document.getElementById('edit-ceremony-gmaps').value,
+                ceremonyWaze: document.getElementById('edit-ceremony-waze').value,
                 receptionVenue: document.getElementById('edit-reception-venue').value,
                 receptionTime: document.getElementById('edit-reception-time').value,
                 receptionAddress: document.getElementById('edit-reception-address').value,
+                receptionGmaps: document.getElementById('edit-reception-gmaps').value,
+                receptionWaze: document.getElementById('edit-reception-waze').value,
+                parentsGroom: document.getElementById('edit-parents-groom').value,
+                parentsBride: document.getElementById('edit-parents-bride').value,
+                ninongs: document.getElementById('edit-ninongs').value,
+                ninangs: document.getElementById('edit-ninangs').value,
+                groomsmen: document.getElementById('edit-groomsmen').value,
+                bridesmaids: document.getElementById('edit-bridesmaids').value,
+                attireSubtitle: document.getElementById('edit-attire-subtitle').value,
+                attireNotes: document.getElementById('edit-attire-notes').value,
+                swatch1: document.getElementById('edit-swatch-1').value,
+                swatchLabel1: document.getElementById('edit-swatch-label-1').value,
+                swatch2: document.getElementById('edit-swatch-2').value,
+                swatchLabel2: document.getElementById('edit-swatch-label-2').value,
+                swatch3: document.getElementById('edit-swatch-3').value,
+                swatchLabel3: document.getElementById('edit-swatch-label-3').value,
+                swatch4: document.getElementById('edit-swatch-4').value,
+                swatchLabel4: document.getElementById('edit-swatch-label-4').value,
+                swatch5: document.getElementById('edit-swatch-5').value,
+                swatchLabel5: document.getElementById('edit-swatch-label-5').value,
+                giftNote: document.getElementById('edit-gift-note').value,
+                giftAccount: document.getElementById('edit-gift-account').value,
+                giftQrImage: siteData.giftQrImage,
                 storyTitle: document.getElementById('edit-story-title').value,
                 storySubtitle: document.getElementById('edit-story-subtitle').value,
                 storyText: document.getElementById('edit-story-text').value,
@@ -1119,6 +1655,14 @@
                 prenupImage1: siteData.prenupImage1,
                 prenupImage2: siteData.prenupImage2,
                 prenupImage3: siteData.prenupImage3,
+                faqQ1: document.getElementById('edit-faq-q1').value,
+                faqA1: document.getElementById('edit-faq-a1').value,
+                faqQ2: document.getElementById('edit-faq-q2').value,
+                faqA2: document.getElementById('edit-faq-a2').value,
+                faqQ3: document.getElementById('edit-faq-q3').value,
+                faqA3: document.getElementById('edit-faq-a3').value,
+                faqQ4: document.getElementById('edit-faq-q4').value,
+                faqA4: document.getElementById('edit-faq-a4').value,
                 invitationWording: document.getElementById('edit-invitation').value,
                 bibleVerse: document.getElementById('edit-verse').value,
                 bibleRef: document.getElementById('edit-reference').value,
