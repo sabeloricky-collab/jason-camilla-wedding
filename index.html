@@ -940,6 +940,9 @@
       .ent-role-block {break-inside:avoid;}
     }
 
+.flower-full {width:100%;min-width:0;}
+    .flower-full .book-entry {white-space:nowrap;overflow-wrap:normal;font-size:clamp(.64rem,2.45vw,1rem);}
+    @media print {.ent-print-card .flower-full .book-entry {font-size:10pt;white-space:nowrap;}}
 </style>
 </head>
 <body>
@@ -1609,18 +1612,21 @@
       const line=(parent,t)=>{if(t)parent.append(element('div','book-entry',t));};
       const grid=()=>element('div','ent-two-cols');
       const block=(title,list,paired=false)=>{const b=element('div','ent-role-block');heading(b,title);list.forEach(r=>{if(paired)line(b,names(r).join(' & '));else names(r).forEach(n=>line(b,n));});return b;};
+      const honorBlock=(title,re,side)=>{const b=element('div','ent-role-block');heading(b,title);const matched=select(re);const opposite=side==='LeftName'?'RightName':'LeftName';const prefix=side==='LeftName'?/^mr\.?\s/i:/^(?:mrs|ms|miss)\.?\s/i;const found=matched.flatMap(r=>names(r).filter(n=>prefix.test(n)));const fallback=matched.map(r=>String(r[side]||r[opposite]||'').trim()).filter(Boolean);for(const n of new Set(found.length?found:fallback))line(b,n);return b;};
       const grouped=(parent,list,paired=false)=>{const groups=new Map();list.forEach(r=>{const k=role(r);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);});for(const [k,rs] of groups)parent.append(block(k,rs,paired));};
       if(page===0){const g=grid();g.append(block('Parents of the Groom',select(/parents.*groom/i)),block('Parents of the Bride',select(/parents.*bride/i)));root.append(g);}
       if(page===1){const g=grid(),men=element('div','ent-role-block'),women=element('div','ent-role-block');heading(men,'Gentlemen');heading(women,'Ladies');select(/principal.*sponsor/i).forEach(r=>{let l=String(r.LeftName||'').trim(),rr=String(r.RightName||'').trim();if(/^mrs\.?\s|^ms\.?\s|^miss\s/i.test(l)||/^mr\.?\s/i.test(rr)){[l,rr]=[rr,l];}line(men,l);line(women,rr);});g.append(men,women);root.append(g);}
-      if(page===2){const g=grid();g.append(block('Best Man',select(/best\s*man/i)),block('Maid of Honor',select(/maid\s*of\s*honou?r/i)));root.append(g);heading(root,'Secondary Sponsors');const sec=grid();grouped(sec,select(/candle|veil|cord|ribbon|secondary.*sponsor/i));root.append(sec);const bridal=select(/bridesmaid|groomsm[ae]n/i);root.append(block('Bridesmaids & Groomsmen',bridal,true));}
-      if(page===3){const g=grid();grouped(g,select(/bearer|little\s*bride|flower\s*girl/i),true);root.append(g);const other=rows.filter(r=>!/parents.*(groom|bride)|principal.*sponsor|best\s*man|maid\s*of\s*honou?r|candle|veil|cord|ribbon|secondary.*sponsor|bridesmaid|groomsm[ae]n|bearer|little\s*bride|flower\s*girl/i.test(role(r)));grouped(root,other,true);}
+      if(page===2){const g=grid();g.append(honorBlock('Best Man',/best\s*man/i,'LeftName'),honorBlock('Maid of Honor',/maid\s*of\s*honou?r/i,'RightName'));root.append(g);heading(root,'Secondary Sponsors');const sec=grid();grouped(sec,select(/candle|veil|cord|ribbon|secondary.*sponsor/i));root.append(sec);const bridal=select(/bridesmaid|groomsm[ae]n/i);root.append(block('Bridesmaids & Groomsmen',bridal,true));}
+      if(page===3){const g=grid();grouped(g,select(/bearer|little\s*bride/i),true);root.append(g);const flowers=select(/flower\s*girl/i);if(flowers.length){const f=block('Flower Girls',flowers,true);f.classList.add('flower-full');root.append(f);}const other=rows.filter(r=>!/parents.*(groom|bride)|principal.*sponsor|best\s*man|maid\s*of\s*honou?r|candle|veil|cord|ribbon|secondary.*sponsor|bridesmaid|groomsm[ae]n|bearer|little\s*bride|flower\s*girl/i.test(role(r)));grouped(root,other,true);}
       return root;
     }
+    function fitFlowerNames(){document.querySelectorAll('#ent-book-page .flower-full .book-entry').forEach(el=>{el.style.fontSize='';let size=parseFloat(getComputedStyle(el).fontSize);while(el.clientWidth>0&&el.scrollWidth>el.clientWidth+1&&size>6){size-=.25;el.style.fontSize=size+'px';}});}
+    window.addEventListener('resize',fitFlowerNames);if(document.fonts)document.fonts.ready.then(fitFlowerNames);
     function renderEntourage(){
       const title=(siteConfig.nuptialsTitle||siteConfig.names).replace(/\s*nuptials\s*/i,'').replace('&','-').trim();
       document.getElementById('ent-nuptials-names').textContent=title;
       entPage=Math.max(0,Math.min(entPage,3));const el=document.getElementById('ent-book-page');el.replaceChildren(buildEntPage(entPage));
-      document.getElementById('ent-page-label').textContent=(entPage+1)+' / 4';document.getElementById('ent-prev').disabled=entPage===0;document.getElementById('ent-next').disabled=entPage===3;animatePage(el);
+      document.getElementById('ent-page-label').textContent=(entPage+1)+' / 4';document.getElementById('ent-prev').disabled=entPage===0;document.getElementById('ent-next').disabled=entPage===3;animatePage(el);requestAnimationFrame(fitFlowerNames);
       const print=document.getElementById('ent-print-pages');print.replaceChildren();for(let i=0;i<4;i++){const card=element('article','ent-print-card');card.append(element('div','nuptials-couple-script',title),element('div','nuptials-sub','Nuptials'),element('div','nuptials-title-script','Entourage'),buildEntPage(i),element('div','ent-print-footer',siteConfig.dateText+'  •  '+(i+1)+' / 4'));print.append(card);}
     }
     document.getElementById('ent-print').addEventListener('click',()=>{renderEntourage();window.print();});
