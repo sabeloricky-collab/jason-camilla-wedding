@@ -909,11 +909,43 @@
     @keyframes pageReveal { from { opacity:0; transform:perspective(900px) rotateY(-7deg) translateX(8px); } to { opacity:1; transform:none; } }
     @media(max-width:640px) { section { padding:3rem .85rem; } .story-chapter { grid-template-columns:1fr; gap:1rem; } .story-chapter img { height:300px; } #story-body { font-size:1rem; } .book-page { min-height:330px; } .book-entry { font-size:1.04rem; } .book-controls { gap:.55rem; } .book-controls .btn { padding:.65rem .85rem; } }
     @media(prefers-reduced-motion:reduce) { .page-motion { animation:none; } }
+
+    #story-body p { margin:0 0 1em; white-space:pre-line; }
+    #story-body p:last-child { margin-bottom:0; }
+    .ent-page-layout { display:flex;flex-direction:column;gap:1.1rem;width:100%; }
+    .ent-two-cols { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem;align-items:start; }
+    .ent-role-block { min-width:0; }
+    .ent-role-block .book-entry { margin:.24em 0;overflow-wrap:break-word; }
+    .ent-layout-2 .book-entry { font-size:1rem; }
+    #ent-print { margin-top:1rem; }
+    #ent-print-pages { display:none; }
+    @media(max-width:640px){ .ent-two-cols {gap:.65rem;} .ent-role-block .book-entry {font-size:clamp(.82rem,3.5vw,1.04rem);} .ent-block-heading {font-size:.65rem;letter-spacing:.08em;} .ent-layout-2 .book-entry {font-size:.9rem;} .book-page {padding:.5rem 0;} }
+    @page { size:A4 portrait; margin:12mm; }
+    @media print {
+      html,body {margin:0!important;padding:0!important;height:auto!important;overflow:visible!important;background:white!important;}
+      body > :not(#ent-print-pages) {display:none!important;}
+      #ent-print-pages {display:block!important;color:#342822;text-align:center;}
+      .ent-print-card {box-sizing:border-box;min-height:265mm;border:1px solid #b99b62;outline:1px solid #dbc9a7;outline-offset:-5px;padding:12mm 9mm 8mm;display:flex;flex-direction:column;break-after:page;page-break-after:always;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+      .ent-print-card:last-child {break-after:auto;page-break-after:auto;}
+      .ent-print-card .nuptials-couple-script {font-size:30pt;}
+      .ent-print-card .nuptials-title-script {font-size:29pt;margin:3mm 0;}
+      .ent-print-card h3 {font:normal 23pt 'Great Vibes',Georgia,serif;color:#a65e70;margin:2mm 0 4mm;}
+      .ent-print-card .ent-page-layout {gap:4mm;flex:1;justify-content:center;}
+      .ent-print-card .ent-two-cols {gap:4mm;}
+      .ent-print-card .ent-block-heading {font-size:9pt;margin:0 0 2mm;}
+      .ent-print-card .book-entry {font:11pt/1.25 'Playfair Display',Georgia,serif;margin:1mm 0;}
+      .ent-print-card .ent-layout-2 {gap:2.5mm;}
+      .ent-print-card .ent-layout-2 .book-entry {font-size:10pt;margin:.65mm 0;}
+      .ent-print-footer {font-size:9pt;margin-top:5mm;}
+      .ent-role-block {break-inside:avoid;}
+    }
+
 </style>
 </head>
 <body>
 <div id="floating-photo" aria-hidden="true"></div>
 
+  <div id="ent-print-pages" aria-hidden="true"></div>
   <!-- Hidden Native Background Audio -->
   <audio id="bg-music" src="./music.mp3" loop preload="auto" style="display:none;"></audio>
 
@@ -971,7 +1003,7 @@
         </div>
         <div class="story-chapter" id="story-chapter">
           <img id="story-img" class="story-img" alt="Couple portrait" />
-          <div><p class="chapter-kicker" id="story-counter"></p><h3 id="story-heading" class="serif" style="font-size:1.65rem;color:var(--primary-rose);margin:.6rem 0 1rem"></h3><p id="story-body"></p></div>
+          <div><p class="chapter-kicker" id="story-counter"></p><h3 id="story-heading" class="serif" style="font-size:1.65rem;color:var(--primary-rose);margin:.6rem 0 1rem"></h3><div id="story-body"></div></div>
         </div>
         <div class="book-controls"><button class="btn btn-outline" id="story-prev">‹ Previous</button><span id="story-page-label" aria-live="polite"></span><button class="btn btn-outline" id="story-next">Next ›</button></div>
       </div>
@@ -1038,7 +1070,7 @@
 
           <div class="book-page" id="ent-book-page" aria-live="polite"></div>
           <div class="book-controls"><button class="btn btn-outline" id="ent-prev">‹ Previous</button><span id="ent-page-label" aria-live="polite"></span><button class="btn btn-outline" id="ent-next">Next ›</button></div>
-          <p style="font-size:.8rem;color:var(--text-muted);margin-top:.7rem">Swipe or tap to turn the page</p>
+          <p style="font-size:.8rem;color:var(--text-muted);margin-top:.7rem">Swipe or tap to turn the page</p><button class="btn btn-outline" id="ent-print" type="button">Print all four pages</button>
         </div>
       </div>
     </div>
@@ -1505,7 +1537,7 @@
 
           const allowedKeys = [
             'names', 'nuptialsTitle', 'tagline', 'dateText', 'countdownTarget',
-            'storyHeading', 'storyBody', 'ceremonyName', 'ceremonyTime', 'ceremonyAddress',
+            'storyHeading', 'storyBody', 'storyChapter1', 'storyChapter2', 'storyChapter3', 'storyChapter4', 'ceremonyName', 'ceremonyTime', 'ceremonyAddress',
             'ceremonyGmaps', 'ceremonyWaze', 'receptionName', 'receptionTime', 'receptionAddress',
             'receptionGmaps', 'receptionWaze', 'attireNote', 'invWording', 'bibleVerse',
             'bibleRef', 'giftNote', 'giftBank', 'rsvpDeadline', 'thankyouMsg',
@@ -1545,47 +1577,53 @@
       '1AKVxfb--lgL_88jPPgdkXqr_1gOzwY_G','1Clh_D5dDzrFZ1taNQ_yTEdIHP0CrI_2t','1zcC-RWAuhy9xkxgLp-m1VJXwP1sMmhqU','1VlWKiIqTh5RwT5amZAJxHa9ppq_6YiMz','1hZtnaZJm5XfYYJhwxdEPj4ShvlRgs92-'
     ].map(id=>'https://lh3.googleusercontent.com/d/'+id);
     function animatePage(el) { el.classList.remove('page-motion'); void el.offsetWidth; el.classList.add('page-motion'); }
-    function paginateStory(text) {
-      const pages=[]; let chunk='';
-      for(const para of String(text||'').split(/\n+/)) {
-        for(const word of para.split(/\s+/).filter(Boolean)) {
-          if(chunk.length+word.length>430 && chunk.trim()) { pages.push(chunk.trim()); chunk=''; }
-          chunk+=(chunk && !chunk.endsWith('\n')?' ':'')+word;
-        }
-        if(chunk) chunk+='\n\n';
+    const approvedChapters = ["*Funny how someone who started as a classmate became the person I want to spend my life with.*\n\nIt all started when Camilla and I became classmates. Back then, I never imagined that the girl sitting in the same classroom would one day become my partner in life. Since she was new to Baguio, I started taking her around the city. What began as simple hangouts turned into dates, late conversations, laughter, and memories that made us closer.", "Then the pandemic came, and life changed for both of us. With her parents' trust, we took a big step and started living together. Not long after, we welcomed our little girl, Zaalia Skyler. Suddenly, life wasn't just about the two of us anymore. We had a family to build and a little person who gave us a bigger reason to keep going.", "We've had our fair share of struggles. Things didn't always go as planned, and there were days when life tested us more than we expected. But through it all, we stayed beside each other. We learned, made sacrifices, laughed through the good days, and held on through the difficult ones.\n\nLooking back, I wouldn't change how our story began. From being classmates and exploring Baguio together to building a family of our own, every little moment brought us here.", "**And now, I get to marry the girl who was once just my classmate. If that's not a beautiful plot twist, I don't know what is.**\n\nDecember 18, 2026. Here's to us, our little family, and forever."];
+    const chapterTitles=['Where It All Began','From Two to Three','Through Every Season','Our Beautiful Plot Twist'];
+    function storyChapters(){return approvedChapters.map((text,i)=>siteConfig['storyChapter'+(i+1)]||text);}
+    function renderStory(){
+      const pages=storyChapters(); storyPage=Math.max(0,Math.min(storyPage,3));
+      document.getElementById('story-heading').textContent=chapterTitles[storyPage];
+      const body=document.getElementById('story-body'); body.replaceChildren();
+      for(const part of pages[storyPage].split(/\n\s*\n/)){
+        const p=document.createElement('p');
+        for(const token of part.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)){
+          if(!token)continue; if(token.startsWith('**')&&token.endsWith('**')){const el=document.createElement('strong');el.textContent=token.slice(2,-2);p.append(el);}
+          else if(token.startsWith('*')&&token.endsWith('*')){const el=document.createElement('em');el.textContent=token.slice(1,-1);p.append(el);} else p.append(document.createTextNode(token));
+        } body.append(p);
       }
-      if(chunk.trim()) pages.push(chunk.trim()); return pages.length?pages:[''];
-    }
-    function renderStory() {
-      const pages=paginateStory(siteConfig.storyBody); storyPage=Math.max(0,Math.min(storyPage,pages.length-1));
-      document.getElementById('story-heading').textContent=siteConfig.storyHeading;
-      document.getElementById('story-body').textContent=pages[storyPage];
       document.getElementById('story-counter').textContent='Chapter '+String(storyPage+1).padStart(2,'0');
-      document.getElementById('story-page-label').textContent=(storyPage+1)+' / '+pages.length;
-      document.getElementById('story-prev').disabled=storyPage===0; document.getElementById('story-next').disabled=storyPage===pages.length-1;
-      const img=document.getElementById('story-img');
-      img.onerror=()=>{ img.onerror=()=>{img.onerror=null;img.src=fallbackStockPhotos.storyImg;};img.src=normalizePhotoUrl(siteConfig.storyImg); };
-      img.src=storyPage===0?normalizePhotoUrl(siteConfig.storyImg):chapterPhotos[storyPage%chapterPhotos.length];
-      animatePage(document.getElementById('story-chapter'));
+      document.getElementById('story-page-label').textContent=(storyPage+1)+' / 4';
+      document.getElementById('story-prev').disabled=storyPage===0;document.getElementById('story-next').disabled=storyPage===3;
+      const img=document.getElementById('story-img');img.onerror=()=>{img.onerror=()=>{img.onerror=null;img.src=fallbackStockPhotos.storyImg;};img.src=normalizePhotoUrl(siteConfig.storyImg);};
+      img.src=storyPage===0?normalizePhotoUrl(siteConfig.storyImg):chapterPhotos[storyPage];animatePage(document.getElementById('story-chapter'));
     }
-    function renderEntourage() {
-      const rows=siteConfig.entourageRows||defaultEntourageRows;
-      document.getElementById('ent-nuptials-names').textContent=(siteConfig.nuptialsTitle||siteConfig.names).replace(/\s*nuptials\s*/i,'').replace('&','-').trim();
-      const groups=new Map();
-      for(const r of rows) { const role=String(r.Role||'').trim().replace(/\s+\d+$/,''); if(!role||(!r.LeftName&&!r.RightName))continue; const key=role.toLowerCase(); if(!groups.has(key))groups.set(key,{role,rows:[]}); groups.get(key).rows.push(r); }
-      const pages=[];
-      const categories=[['Our Beloved Parents',/parents/i],['Principal Sponsors',/principal\s*sponsor/i],['Best Man & Maid of Honor',/best\s*man|maid\s*of\s*honor/i],['Secondary Sponsors',/candle|veil|cord|ribbon/i],['The Bridal Party',/bridesmaid|groomsman|groomsmen/i],['Our Little Angels',/bearer|little bride|flower girl/i]];
-      const remaining=[...groups.values()];
-      function addPages(title,items){ let entries=[]; let count=0; for(const g of items) { for(const r of g.rows){const names=[r.LeftName,r.RightName].filter(Boolean); if(count+names.length>8&&entries.length){pages.push({title,entries}); entries=[];count=0;} entries.push({role:g.role,names});count+=names.length;} } if(entries.length)pages.push({title,entries}); }
-      for(const [title,re] of categories){const items=remaining.filter(g=>re.test(g.role)); addPages(title,items); for(const g of items)remaining.splice(remaining.indexOf(g),1);}
-      for(const g of remaining)addPages(g.role,[g]);
-      if(!pages.length)pages.push({title:'Entourage',entries:[]});
-      entPage=Math.max(0,Math.min(entPage,pages.length-1)); const page=pages[entPage]; const el=document.getElementById('ent-book-page');
-      el.replaceChildren(); const h=document.createElement('h3');h.textContent=page.title;el.append(h);
-      let last=''; for(const entry of page.entries){const block=document.createElement('div'); if(entry.role!==last&&entry.role.toLowerCase()!==page.title.toLowerCase()){const label=document.createElement('div');label.className='ent-block-heading';label.textContent=entry.role;block.append(label);}last=entry.role;const names=document.createElement('div');names.className='book-entry';for(const name of entry.names){const line=document.createElement('span');line.textContent=name;names.append(line);}block.append(names);el.append(block);}
-      document.getElementById('ent-page-label').textContent=(entPage+1)+' / '+pages.length;
-      document.getElementById('ent-prev').disabled=entPage===0;document.getElementById('ent-next').disabled=entPage===pages.length-1;animatePage(el);
+    const entTitles=['Our Beloved Parents','Principal Sponsors','The Wedding Party','Our Little Angels'];
+    function element(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;}
+    function buildEntPage(page){
+      const rows=(siteConfig.entourageRows||defaultEntourageRows).filter(r=>r.LeftName||r.RightName);
+      const role=r=>String(r.Role||'').trim().replace(/\s+\d+$/,'');
+      const select=re=>rows.filter(r=>re.test(role(r)));
+      const names=r=>[r.LeftName,r.RightName].map(x=>String(x||'').trim()).filter(Boolean);
+      const root=element('div','ent-page-layout ent-layout-'+page);root.append(element('h3','',entTitles[page]));
+      const heading=(parent,t)=>parent.append(element('div','ent-block-heading',t));
+      const line=(parent,t)=>{if(t)parent.append(element('div','book-entry',t));};
+      const grid=()=>element('div','ent-two-cols');
+      const block=(title,list,paired=false)=>{const b=element('div','ent-role-block');heading(b,title);list.forEach(r=>{if(paired)line(b,names(r).join(' & '));else names(r).forEach(n=>line(b,n));});return b;};
+      const grouped=(parent,list,paired=false)=>{const groups=new Map();list.forEach(r=>{const k=role(r);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);});for(const [k,rs] of groups)parent.append(block(k,rs,paired));};
+      if(page===0){const g=grid();g.append(block('Parents of the Groom',select(/parents.*groom/i)),block('Parents of the Bride',select(/parents.*bride/i)));root.append(g);}
+      if(page===1){const g=grid(),men=element('div','ent-role-block'),women=element('div','ent-role-block');heading(men,'Gentlemen');heading(women,'Ladies');select(/principal.*sponsor/i).forEach(r=>{let l=String(r.LeftName||'').trim(),rr=String(r.RightName||'').trim();if(/^mrs\.?\s|^ms\.?\s|^miss\s/i.test(l)||/^mr\.?\s/i.test(rr)){[l,rr]=[rr,l];}line(men,l);line(women,rr);});g.append(men,women);root.append(g);}
+      if(page===2){const g=grid();g.append(block('Best Man',select(/best\s*man/i)),block('Maid of Honor',select(/maid\s*of\s*honou?r/i)));root.append(g);heading(root,'Secondary Sponsors');const sec=grid();grouped(sec,select(/candle|veil|cord|ribbon|secondary.*sponsor/i));root.append(sec);const bridal=select(/bridesmaid|groomsm[ae]n/i);root.append(block('Bridesmaids & Groomsmen',bridal,true));}
+      if(page===3){const g=grid();grouped(g,select(/bearer|little\s*bride|flower\s*girl/i),true);root.append(g);const other=rows.filter(r=>!/parents.*(groom|bride)|principal.*sponsor|best\s*man|maid\s*of\s*honou?r|candle|veil|cord|ribbon|secondary.*sponsor|bridesmaid|groomsm[ae]n|bearer|little\s*bride|flower\s*girl/i.test(role(r)));grouped(root,other,true);}
+      return root;
     }
+    function renderEntourage(){
+      const title=(siteConfig.nuptialsTitle||siteConfig.names).replace(/\s*nuptials\s*/i,'').replace('&','-').trim();
+      document.getElementById('ent-nuptials-names').textContent=title;
+      entPage=Math.max(0,Math.min(entPage,3));const el=document.getElementById('ent-book-page');el.replaceChildren(buildEntPage(entPage));
+      document.getElementById('ent-page-label').textContent=(entPage+1)+' / 4';document.getElementById('ent-prev').disabled=entPage===0;document.getElementById('ent-next').disabled=entPage===3;animatePage(el);
+      const print=document.getElementById('ent-print-pages');print.replaceChildren();for(let i=0;i<4;i++){const card=element('article','ent-print-card');card.append(element('div','nuptials-couple-script',title),element('div','nuptials-sub','Nuptials'),element('div','nuptials-title-script','Entourage'),buildEntPage(i),element('div','ent-print-footer',siteConfig.dateText+'  •  '+(i+1)+' / 4'));print.append(card);}
+    }
+    document.getElementById('ent-print').addEventListener('click',()=>{renderEntourage();window.print();});
     function wirePager(prefix,area,change){for(const [suffix,dir] of [['prev',-1],['next',1]])document.getElementById(prefix+'-'+suffix).addEventListener('click',()=>change(dir));let x=0,y=0;const el=document.getElementById(area);el.addEventListener('touchstart',e=>{x=e.changedTouches[0].clientX;y=e.changedTouches[0].clientY;},{passive:true});el.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x,dy=e.changedTouches[0].clientY-y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){const button=document.getElementById(prefix+(dx<0?'-next':'-prev'));if(!button.disabled)button.click();}},{passive:true});}
     wirePager('story','story-chapter',d=>{storyPage+=d;renderStory();});
     wirePager('ent','ent-book-page',d=>{entPage+=d;renderEntourage();});
@@ -1890,9 +1928,9 @@
         if (syncing || document.hidden) return;
         syncing = true;
         try {
-          const before = JSON.stringify([siteConfig.storyHeading, siteConfig.storyBody, siteConfig.entourageRows, siteConfig.nuptialsTitle, siteConfig.names]);
+          const before = JSON.stringify([siteConfig.storyHeading, siteConfig.storyBody, ...storyChapters(), siteConfig.entourageRows, siteConfig.nuptialsTitle, siteConfig.names]);
           await loadGoogleSheetCMS();
-          if (before !== JSON.stringify([siteConfig.storyHeading, siteConfig.storyBody, siteConfig.entourageRows, siteConfig.nuptialsTitle, siteConfig.names])) {
+          if (before !== JSON.stringify([siteConfig.storyHeading, siteConfig.storyBody, ...storyChapters(), siteConfig.entourageRows, siteConfig.nuptialsTitle, siteConfig.names])) {
             renderStory();
             renderEntourage();
           }
