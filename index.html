@@ -883,9 +883,36 @@
       .rsvp-table-wrap { display: none; }
       .rsvp-mobile-cards { display: flex; }
     }
-  </style>
+  
+    /* JC Chapter 2.0 */
+    body { isolation:isolate; }
+    #floating-photo { position:fixed; inset:0; z-index:-1; pointer-events:none; background: center / cover no-repeat; }
+    .hero { background-image:none !important; }
+    section, section.cream-bg { background:rgba(252,249,245,.88); margin:0 0 2.5rem; }
+    #story, #entourage { background:transparent; }
+    .story-chapter { display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:2rem; }
+    .story-chapter img { width:100%; height:clamp(240px,40vw,480px); object-fit:cover; border-radius:5px; }
+    #story-body { font-family:'Playfair Display',serif; font-size:1.12rem; line-height:1.75; white-space:pre-line; overflow-wrap:anywhere; }
+    .book-controls { display:flex; align-items:center; justify-content:center; gap:1rem; margin-top:1.4rem; }
+    .book-controls button:disabled { opacity:.35; cursor:default; }
+    .chapter-kicker { color:var(--primary-rose); letter-spacing:.18em; font-size:.75rem; text-transform:uppercase; }
+    .book-page { min-height:360px; display:flex; flex-direction:column; justify-content:center; gap:1.15rem; padding:1rem .4rem; overflow-wrap:anywhere; }
+    .book-page h3 { color:var(--primary-rose); font-family:'Great Vibes',cursive; font-size:2.5rem; font-weight:400; line-height:1.15; }
+    .book-entry { font-family:'Playfair Display',serif; font-size:1.13rem; line-height:1.45; }
+    .book-entry span { display:block; }
+    .book-page .ent-block-heading { margin:0 0 .4rem; }
+    .nuptials-watermark { display:none; }
+    .nuptials-entourage-card { background:#fffcf7; }
+    .nuptials-entourage-card:before,.nuptials-entourage-card:after { content:'❦'; position:absolute; color:var(--champagne-gold); font-size:2.3rem; opacity:.65; pointer-events:none; }
+    .nuptials-entourage-card:before { top:10px; left:18px; } .nuptials-entourage-card:after { bottom:10px; right:18px; transform:rotate(180deg); }
+    .page-motion { animation:pageReveal .45s ease both; }
+    @keyframes pageReveal { from { opacity:0; transform:perspective(900px) rotateY(-7deg) translateX(8px); } to { opacity:1; transform:none; } }
+    @media(max-width:640px) { section { padding:3rem .85rem; } .story-chapter { grid-template-columns:1fr; gap:1rem; } .story-chapter img { height:300px; } #story-body { font-size:1rem; } .book-page { min-height:330px; } .book-entry { font-size:1.04rem; } .book-controls { gap:.55rem; } .book-controls .btn { padding:.65rem .85rem; } }
+    @media(prefers-reduced-motion:reduce) { .page-motion { animation:none; } }
+</style>
 </head>
 <body>
+<div id="floating-photo" aria-hidden="true"></div>
 
   <!-- Hidden Native Background Audio -->
   <audio id="bg-music" src="./music.mp3" loop preload="auto" style="display:none;"></audio>
@@ -942,13 +969,11 @@
           <h2 class="section-title">Our Story</h2>
           <div class="divider-ornament"></div>
         </div>
-        <div class="grid-2">
-          <img id="story-img" class="story-img" src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=900&q=80" alt="Couple Portrait" />
-          <div>
-            <h3 class="serif" style="font-size: 1.6rem; color: var(--primary-rose); margin-bottom: 1rem;" id="story-heading">From Best Friends to Forever</h3>
-            <p id="story-body" style="color: var(--text-muted); white-space: pre-line;">Every love story is beautiful, but ours is our favorite. Surrounded by the cool pine breeze of Baguio City and the people who mean the world to us, we invite you to witness and celebrate the beginning of our forever as husband and wife.</p>
-          </div>
+        <div class="story-chapter" id="story-chapter">
+          <img id="story-img" class="story-img" alt="Couple portrait" />
+          <div><p class="chapter-kicker" id="story-counter"></p><h3 id="story-heading" class="serif" style="font-size:1.65rem;color:var(--primary-rose);margin:.6rem 0 1rem"></h3><p id="story-body"></p></div>
         </div>
+        <div class="book-controls"><button class="btn btn-outline" id="story-prev">‹ Previous</button><span id="story-page-label" aria-live="polite"></span><button class="btn btn-outline" id="story-next">Next ›</button></div>
       </div>
     </div>
   </section>
@@ -1011,54 +1036,9 @@
           <div class="nuptials-sub">Nuptials</div>
           <div class="nuptials-title-script">Entourage</div>
 
-          <div class="ent-pair-row">
-            <div>
-              <div class="ent-block-heading">PARENTS OF THE GROOM</div>
-              <div class="ent-name-line" id="ent-groom-parents">Mrs. Name<br>Mr. Name</div>
-            </div>
-            <div>
-              <div class="ent-block-heading">PARENTS OF THE BRIDE</div>
-              <div class="ent-name-line" id="ent-bride-parents">Mr. Name<br>Mrs. Name</div>
-            </div>
-          </div>
-
-          <div class="principal-sponsors-section">
-            <div class="ent-block-heading">PRINCIPAL SPONSORS</div>
-            <div class="principal-sponsors-list" id="ent-principal-list"></div>
-          </div>
-
-          <div class="ent-pair-row" style="margin-bottom: 2.2rem;">
-            <div>
-              <div class="ent-block-heading">BEST MAN</div>
-              <div class="ent-name-line" id="ent-best-man">Mr. Name</div>
-            </div>
-            <div>
-              <div class="ent-block-heading">MAID OF HONOR</div>
-              <div class="ent-name-line" id="ent-maid-of-honor">Ms. Name</div>
-            </div>
-          </div>
-
-          <div class="ent-block-heading secondary-sponsors-title">SECONDARY SPONSORS</div>
-          <div class="secondary-grid">
-            <div>
-              <div class="ent-sub-heading">CANDLE</div>
-              <div class="ent-name-line" id="ent-candle">Mr. Name<br>Ms. Name</div>
-            </div>
-            <div>
-              <div class="ent-sub-heading">VEIL</div>
-              <div class="ent-name-line" id="ent-veil">Mr. Name<br>Ms. Name</div>
-            </div>
-            <div>
-              <div class="ent-sub-heading">CORD</div>
-              <div class="ent-name-line" id="ent-cord">Mr. Name<br>Ms. Name</div>
-            </div>
-            <div>
-              <div class="ent-sub-heading">RIBBON</div>
-              <div class="ent-name-line" id="ent-ribbon">Mr. Name<br>Ms. Name</div>
-            </div>
-          </div>
-
-          <div class="extra-entourage-grid" id="ent-extra-party" style="display:none;"></div>
+          <div class="book-page" id="ent-book-page" aria-live="polite"></div>
+          <div class="book-controls"><button class="btn btn-outline" id="ent-prev">‹ Previous</button><span id="ent-page-label" aria-live="polite"></span><button class="btn btn-outline" id="ent-next">Next ›</button></div>
+          <p style="font-size:.8rem;color:var(--text-muted);margin-top:.7rem">Swipe or tap to turn the page</p>
         </div>
       </div>
     </div>
@@ -1560,101 +1540,55 @@
       }
     }
 
-    function renderEntourage() {
-      const rows = siteConfig.entourageRows || defaultEntourageRows;
-      const coupleHeader = (siteConfig.nuptialsTitle || siteConfig.names || 'Jason - Camilla')
-        .replace(/\s*nuptials\s*/i, '')
-        .replace('&', '-')
-        .trim();
-      document.getElementById('ent-nuptials-names').textContent = coupleHeader;
-
-      const byRole = (pattern) => rows.filter(r => pattern.test((r.Role || '').trim()));
-
-      const groomParents = byRole(/parents\s*of\s*the\s*groom/i);
-      if (groomParents.length) {
-        const lines = groomParents.flatMap(r => [r.LeftName, r.RightName].filter(Boolean));
-        document.getElementById('ent-groom-parents').innerHTML = lines.map(escapeHtml).join('<br>');
-      }
-
-      const brideParents = byRole(/parents\s*of\s*the\s*bride/i);
-      if (brideParents.length) {
-        const lines = brideParents.flatMap(r => [r.LeftName, r.RightName].filter(Boolean));
-        document.getElementById('ent-bride-parents').innerHTML = lines.map(escapeHtml).join('<br>');
-      }
-
-      const principals = byRole(/principal\s*sponsor/i);
-      const psContainer = document.getElementById('ent-principal-list');
-      psContainer.innerHTML = principals.map(r => `
-        <div class="ps-row">
-          <span class="ps-left">${escapeHtml(r.LeftName || '')}</span>
-          <span class="ps-dash">-</span>
-          <span class="ps-right">${escapeHtml(r.RightName || '')}</span>
-        </div>
-      `).join('');
-
-      const combinedMohBm = byRole(/maid\s*of\s*honor\s*&\s*best\s*man|best\s*man\s*&\s*maid\s*of\s*honor/i);
-      if (combinedMohBm.length) {
-        const bmNames = combinedMohBm.map(r => r.LeftName).filter(Boolean);
-        const mohNames = combinedMohBm.map(r => r.RightName).filter(Boolean);
-        if (bmNames.length) document.getElementById('ent-best-man').innerHTML = bmNames.map(escapeHtml).join('<br>');
-        if (mohNames.length) document.getElementById('ent-maid-of-honor').innerHTML = mohNames.map(escapeHtml).join('<br>');
-      } else {
-        const bestMan = byRole(/best\s*man/i);
-        if (bestMan.length) {
-          const names = bestMan.flatMap(r => [r.LeftName, r.RightName].filter(Boolean));
-          document.getElementById('ent-best-man').innerHTML = names.map(escapeHtml).join('<br>');
+    let entPage=0, storyPage=0;
+    const chapterPhotos=[
+      '1AKVxfb--lgL_88jPPgdkXqr_1gOzwY_G','1Clh_D5dDzrFZ1taNQ_yTEdIHP0CrI_2t','1zcC-RWAuhy9xkxgLp-m1VJXwP1sMmhqU','1VlWKiIqTh5RwT5amZAJxHa9ppq_6YiMz','1hZtnaZJm5XfYYJhwxdEPj4ShvlRgs92-'
+    ].map(id=>'https://lh3.googleusercontent.com/d/'+id);
+    function animatePage(el) { el.classList.remove('page-motion'); void el.offsetWidth; el.classList.add('page-motion'); }
+    function paginateStory(text) {
+      const pages=[]; let chunk='';
+      for(const para of String(text||'').split(/\n+/)) {
+        for(const word of para.split(/\s+/).filter(Boolean)) {
+          if(chunk.length+word.length>430 && chunk.trim()) { pages.push(chunk.trim()); chunk=''; }
+          chunk+=(chunk && !chunk.endsWith('\n')?' ':'')+word;
         }
-        const maidOfHonor = byRole(/maid\s*of\s*honor/i);
-        if (maidOfHonor.length) {
-          const names = maidOfHonor.flatMap(r => [r.RightName, r.LeftName].filter(Boolean));
-          document.getElementById('ent-maid-of-honor').innerHTML = names.map(escapeHtml).join('<br>');
-        }
+        if(chunk) chunk+='\n\n';
       }
-
-      const renderPairBlock = (regex, elId) => {
-        const el = document.getElementById(elId);
-        if (!el) return;
-        const list = byRole(regex);
-        if (!list.length) {
-          if (rows !== defaultEntourageRows && el.parentElement) el.parentElement.style.display = 'none';
-          return;
-        }
-        if (el.parentElement) el.parentElement.style.display = '';
-        const names = list.flatMap(r => [r.LeftName, r.RightName].filter(Boolean));
-        el.innerHTML = names.map(escapeHtml).join('<br>');
-      };
-      renderPairBlock(/candle/i, 'ent-candle');
-      renderPairBlock(/veil/i, 'ent-veil');
-      renderPairBlock(/cord/i, 'ent-cord');
-      renderPairBlock(/ribbon/i, 'ent-ribbon');
-
-      const knownPattern = /(parents\s*of\s*the\s*groom|parents\s*of\s*the\s*bride|principal\s*sponsor|best\s*man|maid\s*of\s*honor|candle|veil|cord|ribbon)/i;
-      const extraRows = rows.filter(r => r.Role && !knownPattern.test(r.Role.trim()) && (r.LeftName || r.RightName));
-      const extraContainer = document.getElementById('ent-extra-party');
-      if (extraRows.length > 0) {
-        const grouped = {};
-        extraRows.forEach(r => {
-          let role = r.Role.trim().replace(/\s+\d+$/, '');
-          if (/^bridesmaid\s*&\s*groomsman$/i.test(role)) role = 'Bridesmaids & Groomsmen';
-          if (!grouped[role]) grouped[role] = [];
-          if (r.LeftName && r.RightName) {
-            grouped[role].push(`${escapeHtml(r.LeftName)} & ${escapeHtml(r.RightName)}`);
-          } else {
-            if (r.LeftName) grouped[role].push(escapeHtml(r.LeftName));
-            if (r.RightName) grouped[role].push(escapeHtml(r.RightName));
-          }
-        });
-        extraContainer.style.display = 'grid';
-        extraContainer.innerHTML = Object.entries(grouped).map(([role, lines]) => `
-          <div>
-            <div class="ent-sub-heading">${escapeHtml(role)}</div>
-            <div class="ent-name-line">${lines.join('<br>')}</div>
-          </div>
-        `).join('');
-      } else {
-        extraContainer.style.display = 'none';
-      }
+      if(chunk.trim()) pages.push(chunk.trim()); return pages.length?pages:[''];
     }
+    function renderStory() {
+      const pages=paginateStory(siteConfig.storyBody); storyPage=Math.max(0,Math.min(storyPage,pages.length-1));
+      document.getElementById('story-heading').textContent=siteConfig.storyHeading;
+      document.getElementById('story-body').textContent=pages[storyPage];
+      document.getElementById('story-counter').textContent='Chapter '+String(storyPage+1).padStart(2,'0');
+      document.getElementById('story-page-label').textContent=(storyPage+1)+' / '+pages.length;
+      document.getElementById('story-prev').disabled=storyPage===0; document.getElementById('story-next').disabled=storyPage===pages.length-1;
+      const img=document.getElementById('story-img');
+      img.onerror=()=>{ img.onerror=()=>{img.onerror=null;img.src=fallbackStockPhotos.storyImg;};img.src=normalizePhotoUrl(siteConfig.storyImg); };
+      img.src=storyPage===0?normalizePhotoUrl(siteConfig.storyImg):chapterPhotos[storyPage%chapterPhotos.length];
+      animatePage(document.getElementById('story-chapter'));
+    }
+    function renderEntourage() {
+      const rows=siteConfig.entourageRows||defaultEntourageRows;
+      document.getElementById('ent-nuptials-names').textContent=(siteConfig.nuptialsTitle||siteConfig.names).replace(/\s*nuptials\s*/i,'').replace('&','-').trim();
+      const groups=new Map();
+      for(const r of rows) { const role=String(r.Role||'').trim().replace(/\s+\d+$/,''); if(!role||(!r.LeftName&&!r.RightName))continue; const key=role.toLowerCase(); if(!groups.has(key))groups.set(key,{role,rows:[]}); groups.get(key).rows.push(r); }
+      const pages=[];
+      const categories=[['Our Beloved Parents',/parents/i],['Principal Sponsors',/principal\s*sponsor/i],['Best Man & Maid of Honor',/best\s*man|maid\s*of\s*honor/i],['Secondary Sponsors',/candle|veil|cord|ribbon/i],['The Bridal Party',/bridesmaid|groomsman|groomsmen/i],['Our Little Angels',/bearer|little bride|flower girl/i]];
+      const remaining=[...groups.values()];
+      function addPages(title,items){ let entries=[]; let count=0; for(const g of items) { for(const r of g.rows){const names=[r.LeftName,r.RightName].filter(Boolean); if(count+names.length>8&&entries.length){pages.push({title,entries}); entries=[];count=0;} entries.push({role:g.role,names});count+=names.length;} } if(entries.length)pages.push({title,entries}); }
+      for(const [title,re] of categories){const items=remaining.filter(g=>re.test(g.role)); addPages(title,items); for(const g of items)remaining.splice(remaining.indexOf(g),1);}
+      for(const g of remaining)addPages(g.role,[g]);
+      if(!pages.length)pages.push({title:'Entourage',entries:[]});
+      entPage=Math.max(0,Math.min(entPage,pages.length-1)); const page=pages[entPage]; const el=document.getElementById('ent-book-page');
+      el.replaceChildren(); const h=document.createElement('h3');h.textContent=page.title;el.append(h);
+      let last=''; for(const entry of page.entries){const block=document.createElement('div'); if(entry.role!==last&&entry.role.toLowerCase()!==page.title.toLowerCase()){const label=document.createElement('div');label.className='ent-block-heading';label.textContent=entry.role;block.append(label);}last=entry.role;const names=document.createElement('div');names.className='book-entry';for(const name of entry.names){const line=document.createElement('span');line.textContent=name;names.append(line);}block.append(names);el.append(block);}
+      document.getElementById('ent-page-label').textContent=(entPage+1)+' / '+pages.length;
+      document.getElementById('ent-prev').disabled=entPage===0;document.getElementById('ent-next').disabled=entPage===pages.length-1;animatePage(el);
+    }
+    function wirePager(prefix,area,change){for(const [suffix,dir] of [['prev',-1],['next',1]])document.getElementById(prefix+'-'+suffix).addEventListener('click',()=>change(dir));let x=0,y=0;const el=document.getElementById(area);el.addEventListener('touchstart',e=>{x=e.changedTouches[0].clientX;y=e.changedTouches[0].clientY;},{passive:true});el.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x,dy=e.changedTouches[0].clientY-y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){const button=document.getElementById(prefix+(dx<0?'-next':'-prev'));if(!button.disabled)button.click();}},{passive:true});}
+    wirePager('story','story-chapter',d=>{storyPage+=d;renderStory();});
+    wirePager('ent','ent-book-page',d=>{entPage+=d;renderEntourage();});
 
     async function fetchGithubFolderImages(repoOverride, folderOverride) {
       const repo = (repoOverride || siteConfig.githubRepo || detectGithubRepo()).trim();
@@ -1710,11 +1644,9 @@
       document.getElementById('hero-names').textContent = siteConfig.names;
       document.getElementById('hero-date-text').textContent = siteConfig.dateText;
       const heroNorm = normalizePhotoUrl(siteConfig.heroImg);
-      document.getElementById('home').style.backgroundImage = `url('${heroNorm}'), url('${fallbackStockPhotos.heroImg}')`;
+      document.getElementById('floating-photo').style.backgroundImage = `url('${heroNorm}'), url('${fallbackStockPhotos.heroImg}')`;
 
-      bindImgWithFallback(document.getElementById('story-img'), siteConfig.storyImg, fallbackStockPhotos.storyImg);
-      document.getElementById('story-heading').textContent = siteConfig.storyHeading;
-      document.getElementById('story-body').textContent = siteConfig.storyBody;
+      renderStory();
 
       bindImgWithFallback(document.getElementById('ceremony-img'), siteConfig.ceremonyImg, fallbackStockPhotos.ceremonyImg);
       document.getElementById('ceremony-name').textContent = siteConfig.ceremonyName;
@@ -1961,8 +1893,7 @@
           const before = JSON.stringify([siteConfig.storyHeading, siteConfig.storyBody, siteConfig.entourageRows, siteConfig.nuptialsTitle, siteConfig.names]);
           await loadGoogleSheetCMS();
           if (before !== JSON.stringify([siteConfig.storyHeading, siteConfig.storyBody, siteConfig.entourageRows, siteConfig.nuptialsTitle, siteConfig.names])) {
-            document.getElementById('story-heading').textContent = siteConfig.storyHeading;
-            document.getElementById('story-body').textContent = siteConfig.storyBody;
+            renderStory();
             renderEntourage();
           }
         } finally { syncing = false; }
